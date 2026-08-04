@@ -122,9 +122,12 @@ export default function Dashboard() {
   const progress = Math.min(100, (totalGuruvandans / TARGET) * 100);
 
   const remaining = Math.max(0, TARGET - totalGuruvandans);
+  const goalReached = remaining === 0;
   const msPerDay = 24 * 60 * 60 * 1000;
   const daysLeft = Math.max(1, Math.ceil((new Date(BRAND.competitionEnd + 'T23:59:59') - new Date(istDateStr + 'T00:00:00')) / msPerDay));
-  const perDayNeeded = remaining > 0 ? Math.ceil(remaining / daysLeft) : 0;
+  // One decimal place so the hint visibly shifts as points come in, instead of
+  // only changing once remaining crosses a whole multiple of daysLeft.
+  const perDayNeeded = remaining / daysLeft;
   const perWeekNeeded = perDayNeeded * 7;
 
   // Sends a delta for the date it was created for, chaining requests so rapid
@@ -300,21 +303,25 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Pace to target */}
-      <div className="pace-grid">
-        <div className="pace-card">
-          <div className="pace-value">{daysLeft}</div>
-          <div className="pace-label">{T.daysLeftLabel}</div>
+      {/* Pace to target — stops entirely once the goal is reached */}
+      {goalReached ? (
+        <div className="pace-achieved">🎉 {T.goalAchievedShort}</div>
+      ) : (
+        <div className="pace-grid">
+          <div className="pace-card">
+            <div className="pace-value">{daysLeft}</div>
+            <div className="pace-label">{T.daysLeftLabel}</div>
+          </div>
+          <div className="pace-card">
+            <div className="pace-value">{perDayNeeded.toFixed(1)}</div>
+            <div className="pace-label">{T.perDayLabel}</div>
+          </div>
+          <div className="pace-card">
+            <div className="pace-value">{perWeekNeeded.toFixed(1)}</div>
+            <div className="pace-label">{T.perWeekLabel}</div>
+          </div>
         </div>
-        <div className={`pace-card ${remaining === 0 ? 'pace-card--done' : ''}`}>
-          <div className="pace-value">{remaining === 0 ? '✓' : perDayNeeded}</div>
-          <div className="pace-label">{T.perDayLabel}</div>
-        </div>
-        <div className={`pace-card ${remaining === 0 ? 'pace-card--done' : ''}`}>
-          <div className="pace-value">{remaining === 0 ? '✓' : perWeekNeeded}</div>
-          <div className="pace-label">{T.perWeekLabel}</div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
