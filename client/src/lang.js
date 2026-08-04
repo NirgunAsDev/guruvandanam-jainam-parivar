@@ -51,6 +51,10 @@ export const t = {
     undo: '✕ Undo',
     log: 'Add',
     remove: '✕ Clear',
+    daysLeftLabel: 'Days Left',
+    perDayLabel: 'Needed / Day',
+    perWeekLabel: 'Needed / Week',
+    goalAchievedShort: 'Goal Achieved! 🎉',
     // Profile
     myProgressTitle: 'My Progress',
     totalGuruvandansLabel: 'Total Guruvandans',
@@ -142,6 +146,10 @@ export const t = {
     undo: '✕ રદ કરો',
     log: 'ઉમેરો',
     remove: '✕ કાઢો',
+    daysLeftLabel: 'બાકી દિવસો',
+    perDayLabel: 'રોજ જરૂરી',
+    perWeekLabel: 'સાપ્તાહિક જરૂરી',
+    goalAchievedShort: '🎉 ધ્યેય પ્રાપ્ત!',
     // Profile
     myProgressTitle: 'મારી પ્રગતિ',
     totalGuruvandansLabel: 'કુલ ગુરુવંદન',

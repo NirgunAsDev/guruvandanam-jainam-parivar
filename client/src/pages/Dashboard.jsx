@@ -109,11 +109,26 @@ export default function Dashboard() {
 
   const istDateStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
   const isUnlocked = istDateStr >= BRAND.competitionStart;
-  const isProgramEnded = istDateStr > BRAND.competitionEnd;
-  const isEditable = !isProgramEnded && selectedDate >= getEditableCutoff();
+  const isEditable = selectedDate >= getEditableCutoff();
 
   const totalGuruvandans = user?.total_guruvandans || 0;
   const progress = Math.min(100, (totalGuruvandans / TARGET) * 100);
+
+  const remaining = Math.max(0, TARGET - totalGuruvandans);
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const daysLeft = Math.max(1, Math.ceil((new Date(BRAND.competitionEnd + 'T23:59:59') - new Date(istDateStr + 'T00:00:00')) / msPerDay));
+  const perDayNeeded = remaining > 0 ? Math.ceil(remaining / daysLeft) : 0;
+  const perWeekNeeded = perDayNeeded * 7;
+
+  function handleIncrement() {
+    setInputValue(v => String((parseInt(v) || 0) + 1));
+  }
+  function handleDecrement() {
+    setInputValue(v => {
+      const n = (parseInt(v) || 0) - 1;
+      return n > 0 ? String(n) : '';
+    });
+  }
 
   async function handleAdd() {
     const addCount = parseInt(inputValue);
@@ -193,12 +208,6 @@ export default function Dashboard() {
         </div>
       )}
 
-      {isProgramEnded && (
-        <div className="program-ended-banner">
-          ગુરુવંદનમ્ સમાપ્ત થઈ ગયું છે (તા. ૩૧/૧૨/૨૦૨૬). હવે ગુરુવંદન ભરી શકાશે નહિ.
-        </div>
-      )}
-
       {/* Date Navigator */}
       <DateNav selectedDate={selectedDate} onSelect={setSelectedDate} />
 
@@ -219,24 +228,45 @@ export default function Dashboard() {
 
           {isEditable ? (
             <div className="activity-actions">
-              <div className="count-input-row">
+              <div className="counter-stepper">
                 <input
                   type="number"
-                  className="count-input"
-                  min="1"
+                  className="counter-value-input"
+                  min="0"
                   value={inputValue}
                   onChange={e => setInputValue(e.target.value)}
-                  placeholder={T.enterCount}
+                  placeholder="0"
                   disabled={saving || !isUnlocked}
                 />
-                <button
-                  className="btn-primary btn-sm"
-                  onClick={handleAdd}
-                  disabled={saving || !inputValue || !isUnlocked}
-                >
-                  {saving ? '...' : T.log}
-                </button>
+                <div className="counter-btn-row">
+                  <button
+                    type="button"
+                    className="counter-btn counter-btn--minus"
+                    onClick={handleDecrement}
+                    disabled={saving || !isUnlocked || !inputValue}
+                    aria-label="Decrease"
+                  >
+                    −
+                  </button>
+                  <button
+                    type="button"
+                    className="counter-btn counter-btn--plus"
+                    onClick={handleIncrement}
+                    disabled={saving || !isUnlocked}
+                    aria-label="Increase"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
+              <button
+                className="btn-primary btn-full"
+                onClick={handleAdd}
+                disabled={saving || !inputValue || !isUnlocked}
+                style={{ marginTop: 10 }}
+              >
+                {saving ? '...' : T.log}
+              </button>
               {dayCount > 0 && (
                 <button
                   className="btn-danger btn-full"
@@ -253,6 +283,22 @@ export default function Dashboard() {
           )}
         </div>
       )}
+
+      {/* Pace to target */}
+      <div className="pace-grid">
+        <div className="pace-card">
+          <div className="pace-value">{daysLeft}</div>
+          <div className="pace-label">{T.daysLeftLabel}</div>
+        </div>
+        <div className={`pace-card ${remaining === 0 ? 'pace-card--done' : ''}`}>
+          <div className="pace-value">{remaining === 0 ? '✓' : perDayNeeded}</div>
+          <div className="pace-label">{T.perDayLabel}</div>
+        </div>
+        <div className={`pace-card ${remaining === 0 ? 'pace-card--done' : ''}`}>
+          <div className="pace-value">{remaining === 0 ? '✓' : perWeekNeeded}</div>
+          <div className="pace-label">{T.perWeekLabel}</div>
+        </div>
+      </div>
     </div>
   );
 }

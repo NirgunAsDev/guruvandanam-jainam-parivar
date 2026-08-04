@@ -105,14 +105,14 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon) 60%, var(--saffron-deep) 100%);
-  animation: splashFadeOut 0.7s ease-in-out 1.3s both;
+  background: #000;
+  animation: splashFadeOut 0.7s ease-in-out 2.1s both;
 }
 .app-splash-logo {
   width: 260px;
   max-width: 65vw;
   height: auto;
-  animation: splashZoomIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: splashZoomIn 1.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 @keyframes splashZoomIn {
   0% { opacity: 0; transform: scale(0.3); }
@@ -743,6 +743,81 @@ body::after {
 }
 .count-input:focus { border-color: var(--saffron); }
 
+.counter-stepper {
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  padding: 6px 0 4px;
+}
+.counter-value-input {
+  width: 150px;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 46px;
+  font-weight: 800;
+  color: var(--maroon-deep);
+  border: 2px solid var(--cream-dark);
+  border-radius: 16px;
+  background: var(--white);
+  padding: 6px 0;
+  outline: none;
+  -moz-appearance: textfield;
+}
+.counter-value-input:focus { border-color: var(--saffron); }
+.counter-value-input::-webkit-inner-spin-button,
+.counter-value-input::-webkit-outer-spin-button {
+  -webkit-appearance: none; margin: 0;
+}
+.counter-btn-row { display: flex; align-items: center; gap: 28px; }
+.counter-btn {
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  border: none;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-md);
+  transition: transform .12s, box-shadow .12s, opacity .12s;
+}
+.counter-btn:active:not(:disabled) { transform: scale(0.9); }
+.counter-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.counter-btn--minus { background: linear-gradient(135deg, #ece5d8, #d9cfba); color: var(--maroon-deep); }
+.counter-btn--plus { background: linear-gradient(135deg, var(--gold), #f0c230); color: var(--maroon-deep); }
+
+/* ========================
+   Target Pace Boxes
+   ======================== */
+.pace-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.pace-card {
+  background: var(--glass);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 8px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.pace-value {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--maroon-deep);
+}
+.pace-label {
+  font-size: 10px;
+  color: var(--text-mid);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-top: 3px;
+  letter-spacing: 0.4px;
+}
+.pace-card--done { border-color: var(--gold); background: rgba(212,160,23,0.1); }
+.pace-card--done .pace-value { color: var(--success); }
+
 /* ========================
    Profile Page
    ======================== */
@@ -1128,6 +1203,15 @@ body::after {
   .header-stats { width: 100%; }
   .stat-card { flex: 1; min-width: 0; padding: 10px 8px; }
   .stat-value { font-size: 16px; }
+
+  .pace-grid { gap: 6px; }
+  .pace-card { padding: 9px 4px; }
+  .pace-value { font-size: 17px; }
+  .pace-label { font-size: 9px; }
+
+  .counter-value-input { width: 120px; font-size: 36px; }
+  .counter-btn { width: 50px; height: 50px; font-size: 26px; }
+  .counter-btn-row { gap: 20px; }
 
   /* Activity grid */
   .activity-grid { grid-template-columns: 1fr; }

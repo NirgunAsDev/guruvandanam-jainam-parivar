@@ -35,11 +35,6 @@ router.post('/log', authenticateToken, (req, res) => {
     return res.status(400).json({ error: `Logs before ${config.COMPETITION_START_DISPLAY} are not accepted.` });
   }
 
-  const istToday = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-  if (istToday > config.COMPETITION_END_DATE) {
-    return res.status(400).json({ error: `The ${config.BRAND_NAME} program has ended on ${config.COMPETITION_END_DISPLAY}.` });
-  }
-
   if (req.user.is_disqualified) {
     return res.status(403).json({ error: `You have been disqualified from the ${config.BRAND_NAME}.` });
   }
