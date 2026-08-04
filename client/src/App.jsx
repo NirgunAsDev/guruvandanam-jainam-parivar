@@ -18,13 +18,14 @@ export function useAuth() { return useContext(AuthContext); }
 
 function SplashScreen() {
   const [visible, setVisible] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), 1700);
-    return () => clearTimeout(timer);
-  }, []);
   if (!visible) return null;
+  function handleAnimationEnd(e) {
+    // Only the overlay's own fade-out animation should dismiss it —
+    // the logo's zoom-in animation also bubbles an animationend event.
+    if (e.animationName === 'splashFadeOut') setVisible(false);
+  }
   return (
-    <div className="app-splash">
+    <div className="app-splash" onAnimationEnd={handleAnimationEnd}>
       <img src="/guruvandanam-logo.png" alt={BRAND.nameGu} className="app-splash-logo" />
     </div>
   );
