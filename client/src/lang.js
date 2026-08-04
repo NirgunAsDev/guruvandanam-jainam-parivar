@@ -9,7 +9,7 @@ export const BRAND = {
   nameShort: 'Guruvandanam',
   logoAlt: brand.org,
   yearGu: '૨૦૨૬',
-  competitionStartDisplayGu: '૦૧/૦૪/૨૦૨૬',
+  competitionStartDisplayGu: '૦૪/૦૮/૨૦૨૬',
 };
 
 export const t = {

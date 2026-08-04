@@ -195,7 +195,7 @@ export default function Dashboard() {
 
       {isProgramEnded && (
         <div className="program-ended-banner">
-          ગુરુવંદનમ્ સમાપ્ત થઈ ગયું છે (તા. ૩૧/૦૭/૨૦૨૬). હવે ગુરુવંદન ભરી શકાશે નહિ.
+          ગુરુવંદનમ્ સમાપ્ત થઈ ગયું છે (તા. ૩૧/૧૨/૨૦૨૬). હવે ગુરુવંદન ભરી શકાશે નહિ.
         </div>
       )}
 
