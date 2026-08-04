@@ -1,0 +1,16 @@
+{
+  "name": "AaradhnaPatrak",
+  "nameGu": "આરાધનાપત્રક",
+  "org": "Jainam Parivar",
+  "orgGu": "જૈનમ્ પરિવાર",
+  "logoPath": "/jainam-parivar.png",
+  "year": 2026,
+  "competitionStart": "2026-04-01",
+  "competitionStartDisplay": "1st April 2026",
+  "competitionEnd": "2026-07-31",
+  "competitionEndDisplay": "31st July 2026",
+  "bumperUnlockDate": "2026-07-01",
+  "registrationFeePaise": 20000,
+  "registrationFeeDisplay": "₹200",
+  "adminEmailPlaceholder": "admin@aaradhna.com"
+}

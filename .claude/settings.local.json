@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(cat /home/ubuntu/aradhya/server/routes/*.js)",
+      "Bash(pm2 list:*)",
+      "Bash(kill 143882 143848)",
+      "Bash(find /home/ubuntu/aradhya/client/src -type f \\\\\\(-name *.jsx -o -name *.js -o -name *.tsx -o -name *.ts \\\\\\))",
+      "Bash(find /home/ubuntu/aradhya/client/src -type f -name *.tsx -o -name *.ts -o -name *.jsx -o -name *.js)",
+      "Bash(find /home/ubuntu/aradhya/client/src -type f \\\\\\(-name *.js -o -name *.jsx \\\\\\))",
+      "Bash(find /home/ubuntu/aradhya/server -type f -name *.js)",
+      "Bash(grep -r \"proxy\\\\|5000\\\\|3001\" /home/ubuntu/aradhya/client/vite.config*)",
+      "Bash(grep -r \"proxy\\\\|VITE_API\" /home/ubuntu/aradhya/client/.env*)",
+      "Bash(ls /home/ubuntu/aradhya/client/.env*)",
+      "Bash(npm install:*)",
+      "Bash(node -e \"require\\(''./db''\\); require\\(''./routes/payment''\\); console.log\\(''OK''\\)\")",
+      "Bash(node -e \"require\\(''./routes/payment''\\); console.log\\(''payment route OK''\\)\")",
+      "Bash(node -e \"require\\(''./index''\\); setTimeout\\(\\(\\) => process.exit\\(0\\), 500\\)\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" -X POST http://localhost:3001/api/payment/create-order -H \"Content-Type: application/json\")",
+      "Bash(node --check routes/payment.js)",
+      "Bash(node --check index.js)",
+      "Bash(node --check db.js)",
+      "Bash(grep -n \"^\\\\..*{\" /home/ubuntu/aradhya/client/src/index.css)",
+      "Bash(find /home/ubuntu/aradhya/client/src/pages -name \"*.jsx\" -exec basename {} \\\\;)",
+      "Bash(wc -l /home/ubuntu/aradhya/client/src/*.jsx /home/ubuntu/aradhya/client/src/pages/*.jsx)",
+      "Bash(ls -lh /home/ubuntu/aradhya/client/public/*.mp4)",
+      "Bash(file /home/ubuntu/aradhya/client/public/*.mp4)",
+      "Bash(git init *)"
+    ]
+  }
+}
