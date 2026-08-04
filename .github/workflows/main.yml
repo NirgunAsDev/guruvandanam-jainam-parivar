@@ -25,6 +25,9 @@ jobs:
 
       - name: Build
         working-directory: client
+        env:
+          VITE_API_BASE: ${{ secrets.VITE_API_BASE }}
+          VITE_RAZORPAY_KEY_ID: ${{ secrets.VITE_RAZORPAY_KEY_ID }}
         run: npm run build -- --mode production
 
       - name: Configure AWS
@@ -69,6 +72,6 @@ jobs:
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
 
           set -e
-          source ./bashrc
+          source ~/.bashrc
           bash update_guruvandanam.sh
           EOF
