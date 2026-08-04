@@ -3,7 +3,7 @@ import { api } from '../api';
 import { useAuth } from '../App';
 import { LangContext, t } from '../lang';
 
-const GOAL = 51000;
+const GOAL = 1008;
 const MEDALS = ['🥇', '🥈', '🥉'];
 
 export default function Leaderboard() {
@@ -67,9 +67,9 @@ export default function Leaderboard() {
             <tbody>
               {filtered.map((u) => {
                 const rank = users.indexOf(u) + 1;
-                const pct = Math.min(100, (u.total_points / GOAL) * 100);
+                const pct = Math.min(100, (u.total_guruvandans / GOAL) * 100);
                 const isMe = u.id === user?.id;
-                const goalMet = u.total_points >= GOAL;
+                const goalMet = u.total_guruvandans >= GOAL;
                 return (
                   <tr key={u.id} className={isMe ? 'my-row' : ''}>
                     <td className="rank-cell">
@@ -86,7 +86,7 @@ export default function Leaderboard() {
                         </span>
                       </td>
                     )}
-                    <td className="points-cell">{u.total_points.toLocaleString()}</td>
+                    <td className="points-cell">{u.total_guruvandans.toLocaleString()}</td>
                     <td className="progress-cell">
                       <div className="mini-progress">
                         <div className="mini-progress-fill" style={{ width: `${pct}%` }} />

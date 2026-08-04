@@ -4,24 +4,24 @@ import { useAuth } from '../App';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { LangContext, t } from '../lang';
 
-const GOAL = 51000;
+const GOAL = 1008;
 
 // Mini bar chart used in the detail panel
 function MiniChart({ dailyLogs }) {
   if (!dailyLogs?.length) return <div style={{ color: 'var(--text-mid)', fontStyle: 'italic', fontSize: 12 }}>No activity yet</div>;
-  const maxPts = Math.max(...dailyLogs.map(d => d.daily_points), 1);
+  const maxPts = Math.max(...dailyLogs.map(d => d.count), 1);
   const rows = [...dailyLogs].reverse().slice(-14);
   return (
     <div className="daily-chart" style={{ height: 90 }}>
       {rows.map(d => {
-        const pct = Math.min(100, (d.daily_points / maxPts) * 100);
+        const pct = Math.min(100, (d.count / maxPts) * 100);
         return (
           <div key={d.date} className="day-bar-wrap">
             <div className="day-bar-container">
-              <div className="day-bar" style={{ height: `${Math.max(4, pct)}%` }} title={`${d.daily_points} pts`} />
+              <div className="day-bar" style={{ height: `${Math.max(4, pct)}%` }} title={`${d.count} guruvandans`} />
             </div>
             <div className="day-label">{d.date.slice(5)}</div>
-            <div className="day-pts">{d.daily_points}</div>
+            <div className="day-pts">{d.count}</div>
           </div>
         );
       })}
@@ -66,7 +66,7 @@ function UserDetailPanel({ userId, onClose, T }) {
     }
   }
 
-  const progress = data ? Math.min(100, (data.user.total_points / GOAL) * 100) : 0;
+  const progress = data ? Math.min(100, (data.user.total_guruvandans / GOAL) * 100) : 0;
 
   return (
     <>
@@ -147,11 +147,11 @@ function UserDetailPanel({ userId, onClose, T }) {
             {/* Points + progress */}
             <div className="detail-stats-row">
               <div className="detail-stat">
-                <div className="detail-stat-val">{data.user.total_points.toLocaleString()}</div>
-                <div className="detail-stat-lbl">{T.totalPointsLabel}</div>
+                <div className="detail-stat-val">{data.user.total_guruvandans.toLocaleString()}</div>
+                <div className="detail-stat-lbl">{T.totalGuruvandansLabel}</div>
               </div>
               <div className="detail-stat">
-                <div className="detail-stat-val">{Math.max(0, GOAL - data.user.total_points).toLocaleString()}</div>
+                <div className="detail-stat-val">{Math.max(0, GOAL - data.user.total_guruvandans).toLocaleString()}</div>
                 <div className="detail-stat-lbl">{T.remainingLabel}</div>
               </div>
               <div className="detail-stat">
@@ -173,23 +173,6 @@ function UserDetailPanel({ userId, onClose, T }) {
             {/* Activity chart */}
             <div className="detail-section-title">{T.recentActivity}</div>
             <MiniChart dailyLogs={data.dailyLogs} />
-
-            {/* Top activities */}
-            {data.activityBreakdown.length > 0 && (
-              <>
-                <div className="detail-section-title" style={{ marginTop: 16 }}>{T.topActivities}</div>
-                <div className="activity-breakdown">
-                  {data.activityBreakdown.slice(0, 8).map((a, i) => (
-                    <div key={a.activity_id} className="breakdown-row">
-                      <span className="breakdown-rank">#{i + 1}</span>
-                      <span className="breakdown-id">{a.activity_id.replace(/_/g, ' ')}</span>
-                      <span className="breakdown-days">{a.days} {T.days}</span>
-                      <span className="breakdown-pts">{a.total.toLocaleString()} pts</span>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
           </div>
         )}
       </div>
@@ -422,7 +405,7 @@ export default function Admin() {
   // Sort
   const sorted = [...afterFilter].sort((a, b) => {
     let valA, valB;
-    if (sortBy === 'points') { valA = a.total_points; valB = b.total_points; }
+    if (sortBy === 'points') { valA = a.total_guruvandans; valB = b.total_guruvandans; }
     else if (sortBy === 'age') { valA = a.age; valB = b.age; }
     else if (sortBy === 'name') { valA = a.name.toLowerCase(); valB = b.name.toLowerCase(); }
     else if (sortBy === 'rank') { valA = activeList.indexOf(a); valB = activeList.indexOf(b); }
@@ -432,14 +415,14 @@ export default function Admin() {
   });
 
   function exportCSV() {
-    const headers = ['Rank', 'Name', 'Email', 'Phone', 'Age', 'Group', 'Total Points', 'Fee Status', 'Admin', 'Address', 'City', 'State', 'ZIP Code', 'Joined'];
+    const headers = ['Rank', 'Name', 'Email', 'Phone', 'Age', 'Group', 'Total Guruvandans', 'Fee Status', 'Admin', 'Address', 'City', 'State', 'ZIP Code', 'Joined'];
     const rows = users.map((u, i) => [
       i + 1,
       u.name,
       u.email,
       u.age,
       `G${u.group_num}`,
-      u.total_points,
+      u.total_guruvandans,
       u.registration_fee_paid ? 'Paid' : 'Pending',
       u.is_admin ? 'Yes' : 'No',
       u.phone || '',
@@ -463,7 +446,7 @@ export default function Admin() {
 
   const totalUsers = users.length;
   const feePaid = users.filter(u => u.registration_fee_paid).length;
-  const goalMet = users.filter(u => u.total_points >= GOAL).length;
+  const goalMet = users.filter(u => u.total_guruvandans >= GOAL).length;
 
   return (
     <div className="page-container">
@@ -567,7 +550,7 @@ export default function Admin() {
             <tbody>
               {sorted.map((u, i) => {
                 const rank = activeList.indexOf(u) + 1;
-                const pct = Math.min(100, (u.total_points / GOAL) * 100);
+                const pct = Math.min(100, (u.total_guruvandans / GOAL) * 100);
                 return (
                   <tr
                     key={u.id}
@@ -594,7 +577,7 @@ export default function Admin() {
                     </td>
                     <td>
                       <div className="points-with-bar">
-                        <span className="points-cell">{u.total_points.toLocaleString()}</span>
+                        <span className="points-cell">{u.total_guruvandans.toLocaleString()}</span>
                         <div className="mini-progress" style={{ display: 'block', marginTop: 3 }}>
                           <div className="mini-progress-fill" style={{ width: `${pct}%` }} />
                         </div>

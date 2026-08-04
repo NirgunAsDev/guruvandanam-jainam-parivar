@@ -3,7 +3,7 @@ import { api } from '../api';
 import { useAuth } from '../App';
 import { LangContext, t } from '../lang';
 
-const GOAL = 51000;
+const GOAL = 1008;
 
 export default function Profile() {
   const { user } = useAuth();
@@ -18,9 +18,9 @@ export default function Profile() {
 
   if (loading) return <div className="page-container"><div className="loading-spinner">{T.loading}</div></div>;
 
-  const totalPoints = user?.total_points || 0;
-  const progress = Math.min(100, (totalPoints / GOAL) * 100);
-  const remaining = Math.max(0, GOAL - totalPoints);
+  const totalGuruvandans = user?.total_guruvandans || 0;
+  const progress = Math.min(100, (totalGuruvandans / GOAL) * 100);
+  const remaining = Math.max(0, GOAL - totalGuruvandans);
 
   return (
     <div className="page-container">
@@ -39,8 +39,8 @@ export default function Profile() {
 
         <div className="stats-cards">
           <div className="big-stat">
-            <div className="big-stat-value">{totalPoints.toLocaleString()}</div>
-            <div className="big-stat-label">{T.totalPointsLabel}</div>
+            <div className="big-stat-value">{totalGuruvandans.toLocaleString()}</div>
+            <div className="big-stat-label">{T.totalGuruvandansLabel}</div>
           </div>
           <div className="big-stat">
             <div className="big-stat-value">{remaining.toLocaleString()}</div>
@@ -56,9 +56,9 @@ export default function Profile() {
       <div className="section-card">
         <h2>{T.competitionGoal}</h2>
         <div className="progress-header">
-          <span>{totalPoints.toLocaleString()} / {GOAL.toLocaleString()} pts</span>
-          <span className={`goal-status ${totalPoints >= GOAL ? 'goal-met' : ''}`}>
-            {totalPoints >= GOAL ? T.goalAchieved : `${progress.toFixed(1)}${T.complete}`}
+          <span>{totalGuruvandans.toLocaleString()} / {GOAL.toLocaleString()}</span>
+          <span className={`goal-status ${totalGuruvandans >= GOAL ? 'goal-met' : ''}`}>
+            {totalGuruvandans >= GOAL ? T.goalAchieved : `${progress.toFixed(1)}${T.complete}`}
           </span>
         </div>
         <div className="progress-bar progress-bar-lg">
@@ -76,33 +76,17 @@ export default function Profile() {
           <h2>{T.recentActivity}</h2>
           <div className="daily-chart">
             {summary.dailyLogs.slice(0, 14).reverse().map(d => {
-              const pct = Math.min(100, (d.daily_points / 1000) * 100);
+              const pct = Math.min(100, (d.count / 20) * 100);
               return (
                 <div key={d.date} className="day-bar-wrap">
                   <div className="day-bar-container">
-                    <div className="day-bar" style={{ height: `${Math.max(4, pct)}%` }} title={`${d.daily_points} pts`} />
+                    <div className="day-bar" style={{ height: `${Math.max(4, pct)}%` }} title={`${d.count} guruvandans`} />
                   </div>
                   <div className="day-label">{d.date.slice(5)}</div>
-                  <div className="day-pts">{d.daily_points}</div>
+                  <div className="day-pts">{d.count}</div>
                 </div>
               );
             })}
-          </div>
-        </div>
-      )}
-
-      {summary?.activityBreakdown?.length > 0 && (
-        <div className="section-card">
-          <h2>{T.topActivities}</h2>
-          <div className="activity-breakdown">
-            {summary.activityBreakdown.slice(0, 10).map((a, i) => (
-              <div key={a.activity_id} className="breakdown-row">
-                <span className="breakdown-rank">#{i + 1}</span>
-                <span className="breakdown-id">{a.activity_id.replace(/^[gb]\d_/, '').replace(/_/g, ' ')}</span>
-                <span className="breakdown-days">{a.days} {T.days}</span>
-                <span className="breakdown-pts">{a.total.toLocaleString()} pts</span>
-              </div>
-            ))}
           </div>
         </div>
       )}

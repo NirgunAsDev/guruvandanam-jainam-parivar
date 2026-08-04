@@ -9,7 +9,7 @@ const { sendWelcomeEmail, sendPasswordResetEmail } = require('../email');
 const config = require('../config');
 
 function assignGroup(age) {
-  if (age >= 5 && age <= 15) return '1';
+  if (age >= 6 && age <= 15) return '1';
   if (age >= 15 && age <= 25) return '2';
   if (age >= 26 && age <= 60) return '3';
   return '3';
@@ -27,8 +27,8 @@ router.post('/register', async (req, res) => {
     if (!name || !email || !password || !age) {
       return res.status(400).json({ error: 'All fields are required' });
     }
-    if (age < 5 || age > 60) {
-      return res.status(400).json({ error: 'Age must be between 5 and 50' });
+    if (age < 6 || age > 60) {
+      return res.status(400).json({ error: 'Age must be between 6 and 60' });
     }
 
     const existingUser = db.prepare('SELECT id FROM users WHERE LOWER(email) = LOWER(?)').get(email);
@@ -56,7 +56,7 @@ router.post('/register', async (req, res) => {
       city: city || '',
       state: state || '',
       zipcode: zipcode || '',
-      total_points: 0,
+      total_guruvandans: 0,
       registration_fee_paid: 0,
       is_admin: 0,
     };
@@ -107,7 +107,7 @@ router.post('/login', async (req, res) => {
         city: user.city || '',
         state: user.state || '',
         zipcode: user.zipcode || '',
-        total_points: user.total_points,
+        total_guruvandans: user.total_guruvandans,
         registration_fee_paid: user.registration_fee_paid,
         is_admin: 0
       }
@@ -131,7 +131,7 @@ router.get('/me', authenticateToken, (req, res) => {
     city: req.user.city || '',
     state: req.user.state || '',
     zipcode: req.user.zipcode || '',
-    total_points: req.user.total_points,
+    total_guruvandans: req.user.total_guruvandans,
     registration_fee_paid: req.user.registration_fee_paid || 0,
     razorpay_payment_id: req.user.razorpay_payment_id || '',
     is_disqualified: req.user.is_disqualified || 0,
@@ -159,7 +159,7 @@ router.put('/profile', authenticateToken, (req, res) => {
     city: city || '',
     state: state || '',
     zipcode: zipcode || '',
-    total_points: req.user.total_points,
+    total_guruvandans: req.user.total_guruvandans,
     is_admin: req.isAdmin ? 1 : 0
   });
 });
@@ -200,7 +200,7 @@ router.post('/admin-login', async (req, res) => {
         city: user.city || '',
         state: user.state || '',
         zipcode: user.zipcode || '',
-        total_points: user.total_points,
+        total_guruvandans: user.total_guruvandans,
         registration_fee_paid: user.registration_fee_paid,
         is_admin: 1
       }

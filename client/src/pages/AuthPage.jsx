@@ -95,8 +95,8 @@ export default function AuthPage({ mode }) {
     setLoading(true);
     try {
       const age = calcAge(form.dob);
-      if (!isLogin && (age === null || age < 5 || age > 60)) {
-        setError('Age must be between 5 and 60.');
+      if (!isLogin && (age === null || age < 6 || age > 60)) {
+        setError('Age must be between 6 and 60.');
         setLoading(false);
         return;
       }
@@ -115,16 +115,16 @@ export default function AuthPage({ mode }) {
   function getAgeGroupLabel(dob) {
     const a = calcAge(dob);
     if (a === null) return '';
-    if (a >= 5 && a <= 15) return `👦 ${T.g1label}`;
+    if (a >= 6 && a <= 15) return `👦 ${T.g1label}`;
     if (a >= 15 && a <= 25) return `🧑 ${T.g2label}`;
     if (a >= 26 && a <= 60) return `👨 ${T.g3label}`;
     return '';
   }
 
-  // Max DOB: must be at least 5 years old
+  // Max DOB: must be at least 6 years old
   const maxDob = (() => {
     const d = new Date();
-    d.setFullYear(d.getFullYear() - 5);
+    d.setFullYear(d.getFullYear() - 6);
     return d.toISOString().split('T')[0];
   })();
   // Min DOB: must be at most 60 years old
@@ -140,7 +140,7 @@ export default function AuthPage({ mode }) {
         <div className="auth-header">
           <div className="auth-logo"><img src={BRAND.logoPath} alt={BRAND.logoAlt} style={{width:'100%',height:'100%',objectFit:'contain',borderRadius:'0'}} /></div>
           <p>{BRAND.orgGu} આયોજિત</p>
-          <h1>{BRAND.nameGu}</h1>
+          <img src="/guruvandanam-logo.png" alt={BRAND.nameGu} className="auth-title-logo" />
         </div>
 
         <div className="video-preview-banner" onClick={() => setShowVideo(true)}>

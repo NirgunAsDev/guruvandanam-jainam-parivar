@@ -4,7 +4,7 @@ const cors = require('cors');
 const db = require('./db');
 const config = require('./config');
 const authRoutes = require('./routes/auth');
-const activityRoutes = require('./routes/activities');
+const guruvandanRoutes = require('./routes/guruvandan');
 const multer = require('multer');
 const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
@@ -32,12 +32,12 @@ app.use('/api/payment', paymentRoutes);
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
-app.use('/api/activities', activityRoutes);
+app.use('/api/guruvandan', guruvandanRoutes);
 
 // Leaderboard
 app.get('/api/leaderboard', (req, res) => {
   const users = db.prepare(
-    'SELECT id, name, age, group_num, total_points FROM users WHERE is_deleted = 0 AND is_disqualified = 0 ORDER BY total_points DESC LIMIT 50'
+    'SELECT id, name, age, group_num, total_guruvandans FROM users WHERE is_deleted = 0 AND is_disqualified = 0 ORDER BY total_guruvandans DESC LIMIT 50'
   ).all();
   res.json(users);
 });
@@ -50,19 +50,19 @@ app.get('/api/admin/users', authenticateToken, requireAdmin, (req, res) => {
 
   let query, params;
   if (showDeleted) {
-    query = `SELECT id, name, email, age, group_num, total_points, is_admin, registration_fee_paid,
+    query = `SELECT id, name, email, age, group_num, total_guruvandans, is_admin, registration_fee_paid,
                     phone, address, city, state, zipcode, created_at, is_deleted, is_disqualified
-             FROM users WHERE is_deleted = 1 ORDER BY total_points DESC`;
+             FROM users WHERE is_deleted = 1 ORDER BY total_guruvandans DESC`;
     params = [];
   } else if (showDisqualified) {
-    query = `SELECT id, name, email, age, group_num, total_points, is_admin, registration_fee_paid,
+    query = `SELECT id, name, email, age, group_num, total_guruvandans, is_admin, registration_fee_paid,
                     phone, address, city, state, zipcode, created_at, is_deleted, is_disqualified
-             FROM users WHERE is_deleted = 0 AND is_disqualified = 1 ORDER BY total_points DESC`;
+             FROM users WHERE is_deleted = 0 AND is_disqualified = 1 ORDER BY total_guruvandans DESC`;
     params = [];
   } else {
-    query = `SELECT id, name, email, age, group_num, total_points, is_admin, registration_fee_paid,
+    query = `SELECT id, name, email, age, group_num, total_guruvandans, is_admin, registration_fee_paid,
                     phone, address, city, state, zipcode, created_at, is_deleted, is_disqualified
-             FROM users WHERE is_deleted = 0 AND is_disqualified = 0 ORDER BY total_points DESC`;
+             FROM users WHERE is_deleted = 0 AND is_disqualified = 0 ORDER BY total_guruvandans DESC`;
     params = [];
   }
 
@@ -97,25 +97,6 @@ app.put('/api/admin/users/:id/admin', authenticateToken, requireAdmin, (req, res
   res.json({ success: true });
 });
 
-// Admin: discard / restore all logs for a specific activity for a user
-app.put('/api/admin/users/:id/discard-activity', authenticateToken, requireAdmin, (req, res) => {
-  const { id } = req.params;
-  const { activity_id, discarded } = req.body;
-  if (!activity_id) return res.status(400).json({ error: 'activity_id is required' });
-
-  db.prepare(
-    'UPDATE activity_logs SET is_discarded = ? WHERE user_id = ? AND activity_id = ?'
-  ).run(discarded ? 1 : 0, id, activity_id);
-
-  const recalc = db.prepare(
-    `SELECT COALESCE(SUM(points_earned), 0) as total
-     FROM activity_logs WHERE user_id = ? AND is_discarded = 0 AND date >= '${config.COMPETITION_START_DATE}'`
-  ).get(id);
-
-  db.prepare('UPDATE users SET total_points = ? WHERE id = ?').run(recalc.total, id);
-  res.json({ success: true, new_total_points: recalc.total });
-});
-
 // Admin: disqualify / re-qualify user
 app.put('/api/admin/users/:id/disqualify', authenticateToken, requireAdmin, (req, res) => {
   const { id } = req.params;
@@ -139,44 +120,31 @@ app.put('/api/admin/users/:id/password', authenticateToken, requireAdmin, async 
   res.json({ success: true });
 });
 
-// Admin: get all activity logs for a user (date-wise)
+// Admin: get all guruvandan logs for a user (date-wise)
 app.get('/api/admin/users/:id/logs', authenticateToken, requireAdmin, (req, res) => {
   const { id } = req.params;
   const logs = db.prepare(
-    `SELECT id, date, activity_id, quantity, points_earned, is_discarded
-     FROM activity_logs WHERE user_id = ? AND date >= '${config.COMPETITION_START_DATE}'
-     ORDER BY date DESC, points_earned DESC`
+    `SELECT id, date, count
+     FROM guruvandan_logs WHERE user_id = ? AND date >= '${config.COMPETITION_START_DATE}'
+     ORDER BY date DESC`
   ).all(id);
   res.json(logs);
 });
 
-// Admin: get activity summary for a specific user
+// Admin: get guruvandan summary for a specific user
 app.get('/api/admin/users/:id/summary', authenticateToken, requireAdmin, (req, res) => {
   const { id } = req.params;
   const user = db.prepare(
-    'SELECT id, name, email, age, group_num, total_points, registration_fee_paid, created_at, is_disqualified FROM users WHERE id = ?'
+    'SELECT id, name, email, age, group_num, total_guruvandans, registration_fee_paid, created_at, is_disqualified FROM users WHERE id = ?'
   ).get(id);
   if (!user) return res.status(404).json({ error: 'User not found' });
 
   const dailyLogs = db.prepare(
-    `SELECT date, SUM(points_earned) as daily_points
-     FROM activity_logs WHERE user_id = ? AND date >= '${config.COMPETITION_START_DATE}' AND is_discarded = 0
-     GROUP BY date ORDER BY date DESC LIMIT 30`
+    `SELECT date, count FROM guruvandan_logs WHERE user_id = ? AND date >= '${config.COMPETITION_START_DATE}'
+     ORDER BY date DESC LIMIT 30`
   ).all(id);
 
-  const activityBreakdown = db.prepare(
-    `SELECT activity_id, SUM(points_earned) as total, SUM(quantity) as total_qty, COUNT(*) as days
-     FROM activity_logs WHERE user_id = ? AND date >= '${config.COMPETITION_START_DATE}' AND is_discarded = 0
-     GROUP BY activity_id ORDER BY total DESC`
-  ).all(id);
-
-  const discardedActivities = db.prepare(
-    `SELECT activity_id, SUM(points_earned) as total, SUM(quantity) as total_qty, COUNT(*) as days
-     FROM activity_logs WHERE user_id = ? AND date >= '${config.COMPETITION_START_DATE}' AND is_discarded = 1
-     GROUP BY activity_id ORDER BY total DESC`
-  ).all(id);
-
-  res.json({ user, dailyLogs, activityBreakdown, discardedActivities });
+  res.json({ user, dailyLogs });
 });
 
 // Public: get landing video URL

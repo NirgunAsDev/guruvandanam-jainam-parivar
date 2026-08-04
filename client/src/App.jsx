@@ -9,13 +9,26 @@ import UserAccount from './pages/UserAccount';
 import Admin from './pages/Admin';
 import AdminLogin from './pages/AdminLogin';
 import AdminUserDetail from './pages/AdminUserDetail';
-import BumperPoints from './pages/BumperPoints';
 import LandingPage from './pages/LandingPage';
 import PaymentInfo from './pages/PaymentInfo';
 import ResetPassword from './pages/ResetPassword';
 
 export const AuthContext = createContext(null);
 export function useAuth() { return useContext(AuthContext); }
+
+function SplashScreen() {
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(false), 1700);
+    return () => clearTimeout(timer);
+  }, []);
+  if (!visible) return null;
+  return (
+    <div className="app-splash">
+      <img src="/guruvandanam-logo.png" alt={BRAND.nameGu} className="app-splash-logo" />
+    </div>
+  );
+}
 
 function Layout({ children }) {
   const { user, logout } = useAuth();
@@ -50,9 +63,6 @@ function Layout({ children }) {
           </NavLink>
           <NavLink to="/account" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} onClick={() => setMenuOpen(false)}>
             Profile
-          </NavLink>
-          <NavLink to="/bumper" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} onClick={() => setMenuOpen(false)}>
-            {T.bumperNav}
           </NavLink>
           <NavLink to="/payment" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} onClick={() => setMenuOpen(false)}>
             Payment Info
@@ -95,7 +105,7 @@ function Layout({ children }) {
             </button>
           </div>
           <span className="nav-username">{user?.name}</span>
-          <span className="nav-points">{(user?.total_points || 0).toLocaleString()} pts</span>
+          <span className="nav-points">{(user?.total_guruvandans || 0).toLocaleString()} guruvandans</span>
           <button onClick={handleLogout} className="btn-logout">{T.logout}</button>
         </div>
       </nav>
@@ -110,7 +120,7 @@ function Layout({ children }) {
       )}
 
       {!user?.is_disqualified && !user?.is_admin && (
-        (user?.total_points || 0) >= 51000 ? (
+        (user?.total_guruvandans || 0) >= 1008 ? (
           <div className="shortlist-banner shortlist-banner--yes">
             🎉 Congratulations! You have been shortlisted for the prize.
           </div>
@@ -193,9 +203,9 @@ export default function App() {
     }).finally(() => setMeLoaded(true));
   }, []);
 
-  function updateUserPoints(total_points) {
+  function updateUserPoints(total_guruvandans) {
     setUser(prev => {
-      const updated = { ...prev, total_points };
+      const updated = { ...prev, total_guruvandans };
       localStorage.setItem('user', JSON.stringify(updated));
       return updated;
     });
@@ -212,6 +222,7 @@ export default function App() {
   return (
     <LangContext.Provider value={{ lang, toggleLang, activityLang, toggleActivityLang }}>
       <AuthContext.Provider value={{ user, meLoaded, login, logout, updateUserPoints, updateUser }}>
+        <SplashScreen />
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<AuthPage mode="login" />} />
@@ -220,7 +231,6 @@ export default function App() {
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/landing" element={<LandingPage />} />
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-            <Route path="/bumper" element={<PrivateRoute><BumperPoints /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
             <Route path="/account" element={<PrivateRoute><UserAccount /></PrivateRoute>} />
             <Route path="/admin" element={<PrivateRoute><Admin /></PrivateRoute>} />

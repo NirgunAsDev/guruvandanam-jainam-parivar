@@ -89,7 +89,41 @@ body::after {
   object-fit: contain;
   display: block;
   border-radius: 0;
+  animation: logoZoomIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
+
+@keyframes logoZoomIn {
+  0% { opacity: 0; transform: scale(0.5); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* One-time splash screen shown on initial app load */
+.app-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon) 60%, var(--saffron-deep) 100%);
+  animation: splashFadeOut 0.5s ease 1.2s both;
+}
+.app-splash-logo {
+  width: 260px;
+  max-width: 65vw;
+  height: auto;
+  animation: splashZoomIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes splashZoomIn {
+  0% { opacity: 0; transform: scale(0.3); }
+  60% { opacity: 1; transform: scale(1.12); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes splashFadeOut {
+  0%, 80% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+
 .nav-logo {
   font-size: 20px;
   width: 36px; height: 36px;
@@ -389,6 +423,9 @@ body::after {
   font-size: 36px;
   margin: 0 auto 14px;
 }
+.auth-logo img {
+  animation: logoZoomIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
 
 .auth-header h1 {
   font-family: 'Cinzel', serif;
@@ -397,6 +434,14 @@ body::after {
   background-size: 200%;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   animation: shimmer 3s ease infinite;
+}
+.auth-title-logo {
+  display: block;
+  max-width: 220px;
+  width: 60%;
+  height: auto;
+  margin: 6px auto 0;
+  animation: logoZoomIn 0.6s 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 @keyframes shimmer { 0% { background-position: 0% } 100% { background-position: 200% } }
 .auth-header p { opacity: .75; font-size: 17px; margin-top: 5px; font-style: italic; }
@@ -1140,7 +1185,7 @@ body::after {
   /* Auth page */
   .auth-page { padding: 16px; }
   .auth-card { padding: 20px 16px; }
-  .auth-header h1 { font-size: 25px; }
+  .auth-title-logo { max-width: 170px; }
   .auth-logo { width: 60px; height: 60px; font-size: 30px; }
 
   /* Section cards */

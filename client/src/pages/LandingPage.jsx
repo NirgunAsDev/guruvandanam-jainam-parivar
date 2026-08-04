@@ -75,66 +75,61 @@ export default function LandingPage() {
 
           {/* Top benediction lines */}
           <div className="landing-benediction">
-            <p>|| શાસનપતિ શ્રી મહાવીરસ્વામિને નમઃ ||</p>
-            <p>|| શ્રી પ્રેમ-ભુવનભાનુ-પદ્મ-જયઘોષ-રાજેન્દ્ર-હેમચંદ્ર ગુરુભ્યો નમઃ ||</p>
+            <p>॥ शासनपति श्री महावीरस्वामिने नमः ॥</p>
+            <p>॥ नमो नमः श्री गुरु प्रेम-भुवनभानु-पद्म-जयघोष-राजेन्द्र-हेमचंद्र सूरिभ्योः ॥</p>
           </div>
 
           {/* Organizer */}
           <div className="landing-organizer">
-            <p>{BRAND.orgGu} આયોજિત</p>
+            <p>"जैनम् परिवार" आयोजित</p>
           </div>
 
           {/* Main title in bordered box */}
           <div className="landing-title-box">
-            <h1>{BRAND.nameGu}</h1>
+            <h1>"गुरुवंदनम्"</h1>
+            <p className="landing-title-sub">(कुल १००८ गुरु-वंदन)</p>
           </div>
 
           {/* Blessing section */}
           <div className="landing-blessing-section">
-            <p className="landing-blessing-heading">પાવન પ્રેરણા એવમ્ આશીર્વાદ :</p>
+            <p className="landing-blessing-heading">पावन प्रेरणा एवं आशीर्वाद:</p>
 
             <p className="landing-saint landing-saint--bold">
-              પ.પૂ. સહસ્ત્રકૂટ તપારાધક આચાર્યદેવ શ્રીમદ્દ વિજયસંયમબોધિસૂરીશ્વરજી મહારાજ સાહેબ,
+              प.पू. सहस्र कूट तप आराधक आचार्यदेव श्रीमद् विजयसंयमबोधिसूरीश्वरजी म.सा.,
             </p>
             <p className="landing-saint">
-              પૂજ્ય મુનિરાજ શ્રી જિનબોધિવિજયજી મહારાજ સાહેબ તથા
+              प.पू. मुनिराज श्री जिनबोधिविजयजी म.सा. तथा
             </p>
             <p className="landing-saint">
-              પૂજ્ય પંન્યાસ શ્રી કૃપાબોધિવિજયજી મહારાજ સાહેબ.
+              प.पू. पंन्यास श्री कृपाबोधिविजयजी म.सा.
             </p>
           </div>
 
           {/* Rules section */}
           <div className="landing-rules-section">
-            <h2 className="landing-rules-heading">{BRAND.nameGu} નિયમ:</h2>
+            <h2 className="landing-rules-heading">गुरुवंदनम् नियम:</h2>
 
             <ol className="landing-rules-list">
               <li>
-                {BRAND.nameGu} તા.{BRAND.competitionStartDisplayGu}, બુધવારથી તા. {BRAND.competitionEndDisplayGu}, શુક્રવાર સુધી કુલ ૪ મહિના માટે ભરવાનું ફરજીયાત રહેશે.
+                आयु सीमा: इस गुरुवंदनम् आराधना में ६ वर्ष से ६० वर्ष तक के भाग्यशाली लाभार्थी भाग ले सकते हैं।
               </li>
               <li>
-                {BRAND.nameGu} ૫ વર્ષ થી ૬૦ વર્ષ સુધીના પુણ્યશાળીઓ માટે રહેશે.
+                लक्ष्य: गुरुवंदनम् आराधना के अंतर्गत पूज्य साधु भगवंत को चातुर्मास के १२० दिनों में कुल १००८ गुरु-वंदन करने होंगे।
               </li>
               <li>
-                સંપૂર્ણ {BRAND.nameGu} Online ભરવાનું રહેશે.
+                प्रत्यक्ष वंदन: गुरु-वंदन केवल प्रत्यक्ष साधु भगवंत के समक्ष किया गया ही मान्य होगा। किसी फोटो या मूर्ति के समक्ष किया गया वंदन मान्य नहीं होगा।
               </li>
               <li>
-                {BRAND.nameGu}માં રોજે રોજના points ભરવાના આવશ્યક રહેશે. આજના પોઈન્ટ્સની window  વધુમાં વધુ ૨ દિવસ સુધી જ ખુલી રહેશે. ત્યારબાદ જે-તે તારીખના પોઈન્ટ્સ online ભરી શકાશે નહિ જેની ખાસ નોંધ લેવી.
+                दैनिक सीमा: १ दिन में १ साधु महात्मा को अधिकतम ३ बार ही गुरु-वंदन किया जा सकता है। उससे अधिक किया गया वंदन मान्य नहीं होगा।
               </li>
               <li>
-                Minimum 51,000 points થવા આવશ્યક છે. 51,000 points તથા તેનાથી વધુ પોઈન્ટ્સ મેળવનાર તમામ આરાધકનું વિશિષ્ટ બહુમાન કરવામાં આવશે.
+                पंजीकरण एवं प्रविष्टि: 'गुरुवंदनम्' में भाग लेने के लिए Online Registration (ऑनलाइन पंजीकरण) करवाना अनिवार्य है। प्रतिदिन किए गए गुरु-वंदन को ऑनलाइन सबमिट (Submit) करना होगा।
               </li>
               <li>
-                Highest Points મેળવનાર પ્રથમ ૩ ક્રમાંકનું વિશિષ્ટ બહુમાન કરવામાં આવશે. જેમાં પ્રથમ ક્રમાંકનું રૂ.૨૧,૦૦૦/-, દ્વિતીય ક્રમાંકનું રૂ. ૧૧,૦૦૦/- તથા તૃતીય ક્રમાંકનું રૂ. ૫૦૦૦/- થી બહુમાન કરવામાં આવશે.
+                बहुमान (सम्मान): चातुर्मास के १२० दिनों के दौरान जो भी पुण्यात्मा १००८ गुरु-वंदन पूर्ण करेंगे, उन सभी का विशेष बहुमान/सम्मान किया जाएगा।
               </li>
               <li>
-                {BRAND.nameGu}માં ભરવામાં આવતા Points આપની આત્મસાક્ષીએ ભરવાના રહેશે. જે-તે આરાધના કરી હોય તો જ તે Points ભરવા.
-              </li>
-              <li>
-                {BRAND.nameGu} માટે ફરજીયાત Registration ફી {BRAND.registrationFeeDisplayGu} ભરવાની રહેશે. જે કોઈએ પણ રજીસ્ટ્રેશન ફી {BRAND.registrationFeeDisplay} ભરેલી નહીં હોય તો તેમનું ફોર્મ disqualified કરવામાં આવશે.
-              </li>
-              <li>
-                તમામ પોઈન્ટ્સ વગેરે માટેનો અંતિમ નિર્ણય સંપૂર્ણપણે આયોજક {BRAND.orgGu}નો રહેશે.
+                पंजीकरण शुल्क: गुरुवंदनम् आराधना में जुड़ने के लिए ₹ १००/- Registration Fee (पंजीकरण शुल्क) अनिवार्य है।
               </li>
             </ol>
           </div>
@@ -145,31 +140,25 @@ export default function LandingPage() {
 
             <ol className="landing-rules-list">
               <li>
-                The {BRAND.name} must be filled for 4 months, from {BRAND.competitionStartDisplayDMY} (Wednesday) to {BRAND.competitionEndDisplayDMY} (Friday).
+                Age Limit: Fortunate participants aged 6 to 60 years may take part in this {BRAND.name} aradhana.
               </li>
               <li>
-                The {BRAND.name} is for participants aged 5 years to 60 years.
+                Goal: Under the {BRAND.name} aradhana, a total of 1008 Guru-Vandan must be offered to the revered Sadhu Bhagwants during the 120 days of Chaturmas.
               </li>
               <li>
-                The entire {BRAND.name} must be filled online.
+                In-Person Vandan: Only Guru-Vandan performed directly in the presence of a Sadhu Bhagwant will be considered valid. Vandan performed before a photo or idol will not be valid.
               </li>
               <li>
-                Daily points must be entered every day. The entry window for a day's points will remain open for a maximum of 2 days only. After that, points for that particular date cannot be submitted online, so please take note.
+                Daily Limit: A maximum of 3 Guru-Vandan can be performed to one Sadhu Mahatma per day. Any Vandan performed beyond this will not be valid.
               </li>
               <li>
-                A minimum of 51,000 points is required. All participants who achieve 51,000 or more points will receive special recognition.
+                Registration & Entry: Online Registration is mandatory to participate in '{BRAND.name}'. The Guru-Vandan performed each day must be submitted online.
               </li>
               <li>
-                The top 3 participants with the highest points will receive special prizes: 1st Rank: ₹21,000, 2nd Rank: ₹11,000, 3rd Rank: ₹5,000
+                Honor (Recognition): All the blessed souls who complete 1008 Guru-Vandan during the 120 days of Chaturmas will receive special honor/recognition.
               </li>
               <li>
-                All points entered in the {BRAND.name} should be filled honestly according to one's own conscience. Only enter points for practices that you have actually performed.
-              </li>
-              <li>
-                A mandatory registration fee of {BRAND.registrationFeeDisplay} must be paid to participate in the {BRAND.name}. Anyone who has not paid the registration fee of {BRAND.registrationFeeDisplay} will have their form disqualified.
-              </li>
-              <li>
-                The final decision regarding all points and related matters will rest solely with the organizing {BRAND.org}.
+                Registration Fee: A Registration Fee of ₹100/- is mandatory to join the {BRAND.name} aradhana.
               </li>
             </ol>
           </div>
@@ -177,8 +166,13 @@ export default function LandingPage() {
           {/* Contact section */}
           <div className="landing-contact">
             <p>
-              <strong>Contact On: (only Whatsapp: – {BRAND.org} – 8980121712, Nisarg Shah – 9712129112, Hiten Shah – 9898891097, Dhaval Parekh – 9769088851)</strong>
+              <strong>अधिक जानकारी के लिए संपर्क सूत्र: (Only Whatsapp)</strong>
             </p>
+            <p>जैनम् परिवार: +91 8980121712</p>
+            <p>निसर्ग शाह: +91 9712129112</p>
+            <p>हितेन शाह: +91 98988 91097</p>
+            <p>विशित शाह: +91 94270 38103</p>
+            <p>धवल पारेख: +91 97690 88851</p>
           </div>
 
           {/* CTA Button */}

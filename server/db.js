@@ -20,24 +20,25 @@ db.exec(`
     city TEXT DEFAULT '',
     state TEXT DEFAULT '',
     zipcode TEXT DEFAULT '',
-    total_points INTEGER DEFAULT 0,
+    total_guruvandans INTEGER DEFAULT 0,
     is_admin INTEGER DEFAULT 0,
     registration_fee_paid INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
-  CREATE TABLE IF NOT EXISTS activity_logs (
+  CREATE TABLE IF NOT EXISTS guruvandan_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
-    activity_id TEXT NOT NULL,
     date TEXT NOT NULL,
-    quantity INTEGER NOT NULL DEFAULT 1,
-    points_earned INTEGER NOT NULL,
+    count INTEGER NOT NULL DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    UNIQUE(user_id, activity_id, date)
+    UNIQUE(user_id, date)
   );
 `);
+
+// Migrate existing databases from the old points/activities model
+try { db.exec(`ALTER TABLE users RENAME COLUMN total_points TO total_guruvandans`); } catch (_) {}
 
 // Add address columns to existing databases that predate this migration
 for (const col of ['phone', 'address', 'city', 'state', 'zipcode']) {
@@ -45,7 +46,6 @@ for (const col of ['phone', 'address', 'city', 'state', 'zipcode']) {
 }
 try { db.exec(`ALTER TABLE users ADD COLUMN is_deleted INTEGER DEFAULT 0`); } catch (_) {}
 try { db.exec(`ALTER TABLE users ADD COLUMN is_disqualified INTEGER DEFAULT 0`); } catch (_) {}
-try { db.exec(`ALTER TABLE activity_logs ADD COLUMN is_discarded INTEGER DEFAULT 0`); } catch (_) {}
 
 // Razorpay payment columns
 try { db.exec(`ALTER TABLE users ADD COLUMN razorpay_payment_id TEXT DEFAULT ''`); } catch (_) {}
@@ -83,12 +83,12 @@ try {
   db.exec(`CREATE UNIQUE INDEX idx_payment_id_unique ON users(razorpay_payment_id) WHERE razorpay_payment_id != ''`);
 } catch (_) {}
 
-// Recalculate total_points for all users counting only non-discarded logs on/after competition start
+// Recalculate total_guruvandans for all users from logs on/after competition start
 db.exec(`
-  UPDATE users SET total_points = (
-    SELECT COALESCE(SUM(points_earned), 0)
-    FROM activity_logs
-    WHERE user_id = users.id AND date >= '${config.COMPETITION_START_DATE}' AND is_discarded = 0
+  UPDATE users SET total_guruvandans = (
+    SELECT COALESCE(SUM(count), 0)
+    FROM guruvandan_logs
+    WHERE user_id = users.id AND date >= '${config.COMPETITION_START_DATE}'
   )
 `);
 

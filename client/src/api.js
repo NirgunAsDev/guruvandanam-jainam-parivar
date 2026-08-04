@@ -44,24 +44,18 @@ export const api = {
   changePassword: (body) =>
     fetch(`${BASE}/auth/password`, { method: 'PUT', headers: authHeaders(), body: JSON.stringify(body) }).then(handleResponse),
 
-  // Activities
-  getActivities: () =>
-    fetch(`${BASE}/activities`, { headers: authHeaders() }).then(handleResponse),
+  // Guruvandan logs
+  getGuruvandanLogs: (date) =>
+    fetch(`${BASE}/guruvandan/logs${date ? `?date=${date}` : ''}`, { headers: authHeaders() }).then(handleResponse),
 
-  getLogs: (date) =>
-    fetch(`${BASE}/activities/logs?date=${date}`, { headers: authHeaders() }).then(handleResponse),
+  logGuruvandan: (body) =>
+    fetch(`${BASE}/guruvandan/log`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }).then(handleResponse),
 
-  getAllLogs: () =>
-    fetch(`${BASE}/activities/logs`, { headers: authHeaders() }).then(handleResponse),
-
-  logActivity: (body) =>
-    fetch(`${BASE}/activities/log`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }).then(handleResponse),
-
-  deleteLog: (id) =>
-    fetch(`${BASE}/activities/log/${id}`, { method: 'DELETE', headers: authHeaders() }).then(handleResponse),
+  deleteGuruvandanLog: (date) =>
+    fetch(`${BASE}/guruvandan/log/${date}`, { method: 'DELETE', headers: authHeaders() }).then(handleResponse),
 
   getSummary: () =>
-    fetch(`${BASE}/activities/summary`, { headers: authHeaders() }).then(handleResponse),
+    fetch(`${BASE}/guruvandan/summary`, { headers: authHeaders() }).then(handleResponse),
 
   // Leaderboard
   getLeaderboard: () =>
@@ -89,9 +83,6 @@ export const api = {
 
   disqualifyUser: (id, is_disqualified) =>
     fetch(`${BASE}/admin/users/${id}/disqualify`, { method: 'PUT', headers: authHeaders(), body: JSON.stringify({ is_disqualified }) }).then(handleResponse),
-
-  discardActivity: (userId, activity_id, discarded) =>
-    fetch(`${BASE}/admin/users/${userId}/discard-activity`, { method: 'PUT', headers: authHeaders(), body: JSON.stringify({ activity_id, discarded }) }).then(handleResponse),
 
   getUserSummary: (id) =>
     fetch(`${BASE}/admin/users/${id}/summary`, { headers: authHeaders() }).then(handleResponse),
