@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { api } from '../api';
 import { useAuth } from '../App';
 import { LangContext, t, BRAND } from '../lang';
@@ -92,18 +92,25 @@ export default function Dashboard() {
 
   const [selectedDate, setSelectedDate] = useState(toLocalDateStr(new Date()));
   const [dayCount, setDayCount] = useState(0);
-  const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [showVideo, setShowVideo] = useState(false);
   const { activityLang } = useContext(LangContext);
 
+  // Tracks the last value confirmed by the server for the currently selected
+  // date, so typed/tapped edits can be sent as a delta and requests can be
+  // chained in order (avoids lost updates from rapid +/- taps).
+  const lastSyncedRef = useRef(0);
+  const queueRef = useRef(Promise.resolve());
+
   useEffect(() => {
     setLoading(true);
     setError(null);
     api.getGuruvandanLogs(selectedDate).then(logs => {
-      setDayCount(logs[0]?.count || 0);
+      const c = logs[0]?.count || 0;
+      setDayCount(c);
+      lastSyncedRef.current = c;
     }).finally(() => setLoading(false));
   }, [selectedDate]);
 
@@ -120,31 +127,46 @@ export default function Dashboard() {
   const perDayNeeded = remaining > 0 ? Math.ceil(remaining / daysLeft) : 0;
   const perWeekNeeded = perDayNeeded * 7;
 
-  function handleIncrement() {
-    setInputValue(v => String((parseInt(v) || 0) + 1));
-  }
-  function handleDecrement() {
-    setInputValue(v => {
-      const n = (parseInt(v) || 0) - 1;
-      return n > 0 ? String(n) : '';
-    });
-  }
-
-  async function handleAdd() {
-    const addCount = parseInt(inputValue);
-    if (!addCount || addCount <= 0) return;
+  // Sends a delta for the date it was created for, chaining requests so rapid
+  // taps resolve in order instead of racing each other.
+  function commitDelta(delta, date) {
+    if (!delta) return;
     setSaving(true);
     setError(null);
-    try {
-      const res = await api.logGuruvandan({ count: addCount, date: selectedDate });
-      setDayCount(res.log.count);
-      setInputValue('');
-      updateUserPoints(res.total_guruvandans);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setSaving(false);
-    }
+    queueRef.current = queueRef.current
+      .then(() => api.logGuruvandan({ count: delta, date }))
+      .then(res => {
+        if (date === selectedDate) {
+          lastSyncedRef.current = res.log.count;
+          setDayCount(res.log.count);
+        }
+        updateUserPoints(res.total_guruvandans);
+      })
+      .catch(e => {
+        setError(e.message);
+        if (date === selectedDate) setDayCount(lastSyncedRef.current);
+      })
+      .finally(() => setSaving(false));
+  }
+
+  function handleIncrement() {
+    const date = selectedDate;
+    setDayCount(c => c + 1);
+    commitDelta(1, date);
+  }
+  function handleDecrement() {
+    if (dayCount <= 0) return;
+    const date = selectedDate;
+    setDayCount(c => Math.max(0, c - 1));
+    commitDelta(-1, date);
+  }
+  function handleManualChange(e) {
+    const v = e.target.value;
+    setDayCount(v === '' ? 0 : Math.max(0, parseInt(v) || 0));
+  }
+  function handleManualCommit() {
+    const delta = dayCount - lastSyncedRef.current;
+    commitDelta(delta, selectedDate);
   }
 
   async function handleClearDay() {
@@ -153,6 +175,7 @@ export default function Dashboard() {
     try {
       const res = await api.deleteGuruvandanLog(selectedDate);
       setDayCount(0);
+      lastSyncedRef.current = 0;
       updateUserPoints(res.total_guruvandans);
     } catch (e) {
       setError(e.message);
@@ -233,17 +256,18 @@ export default function Dashboard() {
                   type="number"
                   className="counter-value-input"
                   min="0"
-                  value={inputValue}
-                  onChange={e => setInputValue(e.target.value)}
-                  placeholder="0"
-                  disabled={saving || !isUnlocked}
+                  value={dayCount}
+                  onChange={handleManualChange}
+                  onBlur={handleManualCommit}
+                  onKeyDown={e => { if (e.key === 'Enter') e.target.blur(); }}
+                  disabled={!isUnlocked}
                 />
                 <div className="counter-btn-row">
                   <button
                     type="button"
                     className="counter-btn counter-btn--minus"
                     onClick={handleDecrement}
-                    disabled={saving || !isUnlocked || !inputValue}
+                    disabled={!isUnlocked || dayCount <= 0}
                     aria-label="Decrease"
                   >
                     −
@@ -252,27 +276,19 @@ export default function Dashboard() {
                     type="button"
                     className="counter-btn counter-btn--plus"
                     onClick={handleIncrement}
-                    disabled={saving || !isUnlocked}
+                    disabled={!isUnlocked}
                     aria-label="Increase"
                   >
                     +
                   </button>
                 </div>
               </div>
-              <button
-                className="btn-primary btn-full"
-                onClick={handleAdd}
-                disabled={saving || !inputValue || !isUnlocked}
-                style={{ marginTop: 10 }}
-              >
-                {saving ? '...' : T.log}
-              </button>
               {dayCount > 0 && (
                 <button
                   className="btn-danger btn-full"
                   onClick={handleClearDay}
                   disabled={saving || !isUnlocked}
-                  style={{ marginTop: 8 }}
+                  style={{ marginTop: 12 }}
                 >
                   {saving ? '...' : T.remove}
                 </button>

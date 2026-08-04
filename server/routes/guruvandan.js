@@ -26,7 +26,8 @@ router.get('/summary', authenticateToken, (req, res) => {
   res.json({ totalGuruvandans, dailyLogs });
 });
 
-// POST /api/guruvandan/log - add a count for a date (accumulates onto the existing day's count)
+// POST /api/guruvandan/log - adjust the count for a date by a delta (positive or negative;
+// accumulates onto the existing day's count, clamped so it never drops below 0)
 router.post('/log', authenticateToken, (req, res) => {
   const { count, date } = req.body;
   const logDate = date || new Date().toISOString().split('T')[0];
@@ -39,25 +40,27 @@ router.post('/log', authenticateToken, (req, res) => {
     return res.status(403).json({ error: `You have been disqualified from the ${config.BRAND_NAME}.` });
   }
 
-  const addCount = parseInt(count);
-  if (!addCount || addCount <= 0) {
-    return res.status(400).json({ error: 'A positive count is required' });
+  const delta = parseInt(count);
+  if (!delta) {
+    return res.status(400).json({ error: 'A non-zero count is required' });
   }
 
   const existing = db.prepare('SELECT * FROM guruvandan_logs WHERE user_id = ? AND date = ?').get(req.user.id, logDate);
+  const currentCount = existing ? existing.count : 0;
+  const newCount = Math.max(0, currentCount + delta);
+  const actualDelta = newCount - currentCount;
 
   let log;
   if (existing) {
-    const newCount = existing.count + addCount;
     db.prepare('UPDATE guruvandan_logs SET count = ? WHERE id = ?').run(newCount, existing.id);
     log = { id: existing.id, user_id: req.user.id, date: logDate, count: newCount };
   } else {
     const result = db.prepare(
       'INSERT INTO guruvandan_logs (user_id, date, count) VALUES (?, ?, ?)'
-    ).run(req.user.id, logDate, addCount);
-    log = { id: result.lastInsertRowid, user_id: req.user.id, date: logDate, count: addCount };
+    ).run(req.user.id, logDate, newCount);
+    log = { id: result.lastInsertRowid, user_id: req.user.id, date: logDate, count: newCount };
   }
-  db.prepare('UPDATE users SET total_guruvandans = total_guruvandans + ? WHERE id = ?').run(addCount, req.user.id);
+  db.prepare('UPDATE users SET total_guruvandans = total_guruvandans + ? WHERE id = ?').run(actualDelta, req.user.id);
 
   const updatedUser = db.prepare('SELECT total_guruvandans FROM users WHERE id = ?').get(req.user.id);
   res.json({ log, total_guruvandans: updatedUser.total_guruvandans });
