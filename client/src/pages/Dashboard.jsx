@@ -1,25 +1,17 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, useMemo } from 'react';
 import { api } from '../api';
 import { useAuth } from '../App';
 import { LangContext, t, BRAND } from '../lang';
 import VideoModal from '../components/VideoModal';
 
 const TARGET = 1008;
+const MILESTONE_FRACTIONS = [1, 0.75, 0.5, 0.25, 0];
 
 function toLocalDateStr(date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
-}
-
-function buildRecentDays(n = 4) {
-  const today = new Date();
-  return Array.from({ length: n }, (_, i) => {
-    const d = new Date(today);
-    d.setDate(today.getDate() - (n - 1 - i));
-    return toLocalDateStr(d);
-  });
 }
 
 function getEditableCutoff() {
@@ -30,58 +22,100 @@ function getEditableCutoff() {
 
 const MIN_DATE = BRAND.competitionStart;
 
-function DateNav({ selectedDate, onSelect }) {
-  const recentDays = buildRecentDays(3).filter(d => d >= MIN_DATE);
-  const todayStr = toLocalDateStr(new Date());
-  const isRecent = recentDays.includes(selectedDate);
+function daysInMonth(year, month) {
+  return new Date(year, month + 1, 0).getDate();
+}
 
-  function dayLabel(dateStr) {
-    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en', { weekday: 'short' });
+// Builds a fixed 42-cell (6-week) grid for the given 'YYYY-MM' month. Cells
+// outside the current month are shown muted and are not clickable.
+function buildMonthGrid(monthStr) {
+  const [year, month1] = monthStr.split('-').map(Number);
+  const month = month1 - 1;
+  const firstDow = new Date(year, month, 1).getDay();
+  const totalDays = daysInMonth(year, month);
+  const cells = [];
+  for (let i = 0; i < firstDow; i++) cells.push({ day: null, dateStr: null });
+  for (let d = 1; d <= totalDays; d++) {
+    cells.push({ day: d, dateStr: `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}` });
   }
-  function dayNum(dateStr) {
-    return new Date(dateStr + 'T12:00:00').getDate();
-  }
-  function monthShort(dateStr) {
-    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en', { month: 'short' });
-  }
+  while (cells.length < 42) cells.push({ day: null, dateStr: null });
+  return cells;
+}
+
+function shiftMonth(monthStr, delta) {
+  const [year, month1] = monthStr.split('-').map(Number);
+  const d = new Date(year, month1 - 1 + delta, 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function MonthCalendar({ selectedDate, minDate, maxDate, onSelect }) {
+  const [monthStr, setMonthStr] = useState(selectedDate.slice(0, 7));
+  useEffect(() => { setMonthStr(selectedDate.slice(0, 7)); }, [selectedDate]);
+
+  const cells = useMemo(() => buildMonthGrid(monthStr), [monthStr]);
+  const [year, month1] = monthStr.split('-').map(Number);
+  const monthLabel = new Date(year, month1 - 1, 1).toLocaleDateString('en', { month: 'long', year: 'numeric' });
+  const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="date-nav">
-      <div className="date-pills">
-        {recentDays.map((d) => {
-          const isActive = selectedDate === d;
+    <div className="cal-grid-wrap">
+      <div className="cal-grid-header">
+        <button type="button" onClick={() => setMonthStr(m => shiftMonth(m, -1))} aria-label="Previous month">‹</button>
+        <span>{monthLabel}</span>
+        <button type="button" onClick={() => setMonthStr(m => shiftMonth(m, 1))} aria-label="Next month">›</button>
+      </div>
+      <div className="cal-grid-weekdays">
+        {weekdays.map(w => <span key={w}>{w}</span>)}
+      </div>
+      <div className="cal-grid-days">
+        {cells.map((c, i) => {
+          if (!c.dateStr) return <span key={i} className="cal-day cal-day--empty" />;
+          const disabled = c.dateStr < minDate || c.dateStr > maxDate;
+          const isSelected = c.dateStr === selectedDate;
           return (
             <button
-              key={d}
-              className={`date-pill ${isActive ? 'date-pill--active' : ''}`}
-              onClick={() => onSelect(d)}
+              type="button"
+              key={i}
+              className={`cal-day ${isSelected ? 'cal-day--selected' : ''}`}
+              disabled={disabled}
+              onClick={() => onSelect(c.dateStr)}
             >
-              <span className="date-pill-weekday">{dayLabel(d)}</span>
-              <span className="date-pill-num">{dayNum(d)}</span>
-              <span className="date-pill-month">{monthShort(d)}</span>
-              {d === todayStr && <span className="date-pill-today-dot" />}
+              {c.day}
             </button>
           );
         })}
-
-        {/* Calendar pill: label wraps a transparent date input so clicking opens native picker directly */}
-        <label className={`date-pill date-pill--cal ${!isRecent ? 'date-pill--active' : ''}`}>
-          <span className="date-pill-weekday">{!isRecent ? dayLabel(selectedDate) : ''}</span>
-          <span className="date-pill-num">📅</span>
-          <span className="date-pill-month">
-            {!isRecent ? `${dayNum(selectedDate)} ${monthShort(selectedDate)}` : 'More'}
-          </span>
-          <input
-            type="date"
-            className="date-cal-hidden"
-            value={selectedDate}
-            min={MIN_DATE}
-            max={todayStr}
-            onChange={e => { if (e.target.value >= MIN_DATE) onSelect(e.target.value); }}
-          />
-        </label>
       </div>
     </div>
+  );
+}
+
+function MiniChart({ data }) {
+  if (!data.length) return <div className="mini-chart-empty">No activity logged yet</div>;
+  const max = Math.max(1, ...data.map(d => d.count));
+  const w = 320, h = 130, gap = 8;
+  const barW = (w - gap * (data.length - 1)) / data.length;
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} className="mini-chart-svg" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#F0C842" />
+          <stop offset="100%" stopColor="#D4A017" />
+        </linearGradient>
+      </defs>
+      {data.map((d, i) => {
+        const barH = Math.max(2, (d.count / max) * (h - 24));
+        const x = i * (barW + gap);
+        const y = h - barH - 18;
+        return (
+          <g key={d.date}>
+            <rect x={x} y={y} width={barW} height={barH} rx="3" fill="url(#barGrad)" />
+            <text x={x + barW / 2} y={h - 4} textAnchor="middle" fontSize="9" fill="rgba(253,246,227,0.55)">
+              {new Date(d.date + 'T12:00:00').getDate()}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
   );
 }
 
@@ -96,6 +130,7 @@ export default function Dashboard() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [showVideo, setShowVideo] = useState(false);
+  const [dailyLogs, setDailyLogs] = useState([]);
   const { activityLang } = useContext(LangContext);
 
   // Tracks the last value confirmed by the server for the currently selected
@@ -103,6 +138,10 @@ export default function Dashboard() {
   // chained in order (avoids lost updates from rapid +/- taps).
   const lastSyncedRef = useRef(0);
   const queueRef = useRef(Promise.resolve());
+
+  function refreshSummary() {
+    api.getSummary().then(res => setDailyLogs(res.dailyLogs || [])).catch(() => {});
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -114,9 +153,12 @@ export default function Dashboard() {
     }).finally(() => setLoading(false));
   }, [selectedDate]);
 
+  useEffect(() => { refreshSummary(); }, []);
+
   const istDateStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
   const isUnlocked = istDateStr >= BRAND.competitionStart;
   const isEditable = selectedDate >= getEditableCutoff();
+  const todayStr = toLocalDateStr(new Date());
 
   const totalGuruvandans = user?.total_guruvandans || 0;
   const progress = Math.min(100, (totalGuruvandans / TARGET) * 100);
@@ -129,6 +171,9 @@ export default function Dashboard() {
   // only changing once remaining crosses a whole multiple of daysLeft.
   const perDayNeeded = remaining / daysLeft;
   const perWeekNeeded = perDayNeeded * 7;
+
+  const milestones = MILESTONE_FRACTIONS.map(f => Math.round(TARGET * f));
+  const chartData = [...dailyLogs].reverse().slice(-7);
 
   // Sends a delta for the date it was created for, chaining requests so rapid
   // taps resolve in order instead of racing each other.
@@ -144,6 +189,7 @@ export default function Dashboard() {
           setDayCount(res.log.count);
         }
         updateUserPoints(res.total_guruvandans);
+        refreshSummary();
       })
       .catch(e => {
         setError(e.message);
@@ -180,6 +226,7 @@ export default function Dashboard() {
       setDayCount(0);
       lastSyncedRef.current = 0;
       updateUserPoints(res.total_guruvandans);
+      refreshSummary();
     } catch (e) {
       setError(e.message);
     } finally {
@@ -188,45 +235,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="page-container">
-      {/* Header */}
-      <div className="dashboard-header">
-        <div>
-          <h1>{T.guruvandanCounter}</h1>
-          <p>{T.hello}, <strong>{user?.name}</strong></p>
-        </div>
-        <div className="header-stats">
-          <div className="stat-card">
-            <div className="stat-value">{totalGuruvandans.toLocaleString()}</div>
-            <div className="stat-label">{T.totalGuruvandans}</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{dayCount.toLocaleString()}</div>
-            <div className="stat-label">{T.dayGuruvandans}</div>
-          </div>
-        </div>
+    <div className="page-container dash-immersive">
+     <div className="dash-stage">
+      <div className="dash-hero">
+        <h1>{T.guruvandanCounter}</h1>
+        <p>{T.hello}, <strong>{user?.name}</strong></p>
       </div>
+
       <VideoModal isOpen={showVideo} onClose={() => setShowVideo(false)} />
-
-      {/* Progress */}
-      <div className="progress-section">
-        <div className="progress-header">
-          <span>{T.progressGoal}</span>
-          <span>{progress.toFixed(1)}%</span>
-        </div>
-        <div className="progress-bar">
-          <div className="progress-fill" style={{ width: `${progress}%` }} />
-        </div>
-      </div>
-
-      <div className="video-preview-banner" onClick={() => setShowVideo(true)}>
-        <div className="video-play-circle">▶</div>
-        <div className="video-preview-text">
-          <div className="video-preview-label">Help Video — ગુરુવંદનમ્</div>
-          <div className="video-preview-sub">सहायता वीडियो / મદદ વિડિઓ</div>
-        </div>
-        <div className="video-preview-arrow">›</div>
-      </div>
 
       {!isUnlocked && (
         <div className="bumper-locked-banner">
@@ -234,94 +250,166 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Date Navigator */}
-      <DateNav selectedDate={selectedDate} onSelect={setSelectedDate} />
-
-      {/* Counter */}
-      {loading ? (
-        <div className="loading-spinner">{T.loadingActivities}</div>
-      ) : (
-        <div className="activity-card">
-          <div className="activity-card-header">
-            <div className="activity-name">{T.guruvandansOn} {selectedDate}</div>
+      <div className="dash-grid">
+        {/* LEFT COLUMN */}
+        <div className="dash-col">
+          <div className="dash-panel milestone-panel">
+            <div className="milestone-top-badge">{TARGET} Goal</div>
+            <div className="milestone-track">
+              <div className="milestone-track-line">
+                <div className="milestone-track-fill" style={{ height: `${progress}%` }} />
+              </div>
+              {milestones.map((m, i) => {
+                const reached = totalGuruvandans >= m;
+                const side = i % 2 === 0 ? 'right' : 'left';
+                const top = (i / (milestones.length - 1)) * 100;
+                return (
+                  <div key={m} className="milestone-row" style={{ top: `${top}%` }}>
+                    <div className="milestone-badge-slot milestone-badge-slot--left">
+                      {side === 'left' && (
+                        <span className="milestone-badge-wrap">
+                          <span className="milestone-badge">{m === 0 ? 'Start' : `${m} Goal`}</span>
+                          <span className="milestone-tick" />
+                        </span>
+                      )}
+                    </div>
+                    <span className={`milestone-dot ${reached ? 'milestone-dot--reached' : ''}`} />
+                    <div className="milestone-badge-slot milestone-badge-slot--right">
+                      {side === 'right' && (
+                        <span className="milestone-badge-wrap">
+                          <span className="milestone-tick" />
+                          <span className="milestone-badge">{m === 0 ? 'Start' : `${m} Goal`}</span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="logged-badge">
-            {dayCount} {T.guruvandansLogged}
+          <div className="dash-panel progress-panel">
+            <div className="progress-header">
+              <span>{T.progressGoal}</span>
+              <span>{progress.toFixed(1)}%</span>
+            </div>
+            <div className="progress-bar">
+              <div className="progress-fill" style={{ width: `${progress}%` }} />
+            </div>
           </div>
 
-          {error && <div style={{ color: 'var(--danger, #ef4444)', fontSize: 13, marginBottom: 8 }}>{error}</div>}
+          <div className="dash-panel counter-panel">
+            <h3 className="dash-panel-title">Counter Logging Tool</h3>
 
-          {isEditable ? (
-            <div className="activity-actions">
-              <div className="counter-stepper">
-                <input
-                  type="number"
-                  className="counter-value-input"
-                  min="0"
-                  value={dayCount}
-                  onChange={handleManualChange}
-                  onBlur={handleManualCommit}
-                  onKeyDown={e => { if (e.key === 'Enter') e.target.blur(); }}
-                  disabled={!isUnlocked}
-                />
-                <div className="counter-btn-row">
-                  <button
-                    type="button"
-                    className="counter-btn counter-btn--minus"
-                    onClick={handleDecrement}
-                    disabled={!isUnlocked || dayCount <= 0}
-                    aria-label="Decrease"
-                  >
-                    −
-                  </button>
-                  <button
-                    type="button"
-                    className="counter-btn counter-btn--plus"
-                    onClick={handleIncrement}
+            {error && <div className="dash-error">{error}</div>}
+
+            {loading ? (
+              <div className="loading-spinner">{T.loadingActivities}</div>
+            ) : isEditable ? (
+              <>
+                <div className="logged-pill">{dayCount} {T.guruvandansLogged}</div>
+                <div className="counter-stepper">
+                  <input
+                    type="number"
+                    className="counter-value-input"
+                    min="0"
+                    value={dayCount}
+                    onChange={handleManualChange}
+                    onBlur={handleManualCommit}
+                    onKeyDown={e => { if (e.key === 'Enter') e.target.blur(); }}
                     disabled={!isUnlocked}
-                    aria-label="Increase"
-                  >
-                    +
+                  />
+                  <div className="counter-btn-row">
+                    <button
+                      type="button"
+                      className="counter-btn counter-btn--minus"
+                      onClick={handleDecrement}
+                      disabled={!isUnlocked || dayCount <= 0}
+                      aria-label="Decrease"
+                    >
+                      −
+                    </button>
+                    <button
+                      type="button"
+                      className="counter-btn counter-btn--plus"
+                      onClick={handleIncrement}
+                      disabled={!isUnlocked}
+                      aria-label="Increase"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                {dayCount > 0 && (
+                  <button className="dash-clear-link" onClick={handleClearDay} disabled={saving || !isUnlocked}>
+                    {saving ? '...' : T.remove}
                   </button>
+                )}
+                <MonthCalendar
+                  selectedDate={selectedDate}
+                  minDate={MIN_DATE}
+                  maxDate={todayStr}
+                  onSelect={setSelectedDate}
+                />
+              </>
+            ) : (
+              <div className="readonly-notice">🔒 જૂની તારીખ — ફક્ત જોવા માટે</div>
+            )}
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN */}
+        <div className="dash-col">
+          <div className="dash-panel feed-panel">
+            <h3 className="dash-panel-title">Daily Activity Feed</h3>
+            <div className="feed-list">
+              {dailyLogs.slice(0, 5).map((log, i) => (
+                <div key={log.date} className={`feed-item ${i === 0 ? 'feed-item--active' : ''}`}>
+                  <span className="feed-dot" />
+                  <span className="feed-text">
+                    {new Date(log.date + 'T12:00:00').toLocaleDateString('en', { month: 'short', day: 'numeric' })}: {log.count} Guruvandans
+                  </span>
+                </div>
+              ))}
+              {dailyLogs.length === 0 && <div className="feed-empty">No activity yet</div>}
+            </div>
+          </div>
+
+          <div className="video-preview-banner" onClick={() => setShowVideo(true)}>
+            <div className="video-play-circle">▶</div>
+            <div className="video-preview-text">
+              <div className="video-preview-label">Help Video — ગુરુવંદનમ્</div>
+              <div className="video-preview-sub">सहायता वीडियो / મદદ વિડિઓ</div>
+            </div>
+            <div className="video-preview-arrow">›</div>
+          </div>
+
+          <div className="dash-panel analytics-panel">
+            <h3 className="dash-panel-title">Detailed Analytics</h3>
+            <MiniChart data={chartData} />
+
+            {goalReached ? (
+              <div className="pace-achieved">🎉 {T.goalAchievedShort}</div>
+            ) : (
+              <div className="pace-grid">
+                <div className="pace-card">
+                  <div className="pace-value">{daysLeft}</div>
+                  <div className="pace-label">{T.daysLeftLabel}</div>
+                </div>
+                <div className="pace-card">
+                  <div className="pace-value">{perDayNeeded.toFixed(1)}</div>
+                  <div className="pace-label">{T.perDayLabel}</div>
+                </div>
+                <div className="pace-card">
+                  <div className="pace-value">{perWeekNeeded.toFixed(1)}</div>
+                  <div className="pace-label">{T.perWeekLabel}</div>
                 </div>
               </div>
-              {dayCount > 0 && (
-                <button
-                  className="btn-danger btn-full"
-                  onClick={handleClearDay}
-                  disabled={saving || !isUnlocked}
-                  style={{ marginTop: 12 }}
-                >
-                  {saving ? '...' : T.remove}
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="readonly-notice">🔒 જૂની તારીખ — ફક્ત જોવા માટે</div>
-          )}
-        </div>
-      )}
-
-      {/* Pace to target — stops entirely once the goal is reached */}
-      {goalReached ? (
-        <div className="pace-achieved">🎉 {T.goalAchievedShort}</div>
-      ) : (
-        <div className="pace-grid">
-          <div className="pace-card">
-            <div className="pace-value">{daysLeft}</div>
-            <div className="pace-label">{T.daysLeftLabel}</div>
-          </div>
-          <div className="pace-card">
-            <div className="pace-value">{perDayNeeded.toFixed(1)}</div>
-            <div className="pace-label">{T.perDayLabel}</div>
-          </div>
-          <div className="pace-card">
-            <div className="pace-value">{perWeekNeeded.toFixed(1)}</div>
-            <div className="pace-label">{T.perWeekLabel}</div>
+            )}
           </div>
         </div>
-      )}
+      </div>
+     </div>
     </div>
   );
 }

@@ -830,6 +830,411 @@ body::after {
 }
 
 /* ========================
+   Dashboard — Minimalist Mockup
+   Scoped to .dash-modern so no other page is affected. Flattens the
+   gradients/heavy shadows, drops the ornate serif from numbers in favor
+   of the existing sans body face, and trims visual noise (fewer borders,
+   more whitespace, one accent color used sparingly).
+   ======================== */
+.dash-modern .dashboard-header p { font-style: normal; }
+
+.dash-modern .header-stats { gap: 8px; }
+.dash-modern .stat-card {
+  background: var(--white);
+  border: 1px solid rgba(44,24,16,0.08);
+  border-radius: 14px;
+  box-shadow: none;
+  padding: 12px 18px;
+}
+.dash-modern .stat-value {
+  font-family: 'Noto Sans Gujarati', -apple-system, sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--maroon-deep);
+}
+.dash-modern .stat-label { color: var(--text-mid); }
+
+.dash-modern .progress-bar { height: 6px; background: rgba(44,24,16,0.08); }
+.dash-modern .progress-fill { background: var(--gold); }
+.dash-modern .progress-header { font-size: 12px; color: var(--text-mid); }
+
+.dash-modern .video-preview-banner {
+  background: var(--white);
+  border: 1px solid rgba(44,24,16,0.08);
+  box-shadow: none;
+}
+.dash-modern .video-preview-banner:hover { transform: none; box-shadow: none; border-color: rgba(212,160,23,0.4); }
+.dash-modern .video-play-circle { background: var(--gold); animation: none; box-shadow: none; }
+.dash-modern .video-preview-label { font-family: inherit; color: var(--maroon-deep); }
+.dash-modern .video-preview-sub { color: var(--text-mid); }
+.dash-modern .video-preview-arrow { color: var(--text-mid); }
+
+.dash-modern .date-pill {
+  border-radius: 10px;
+  box-shadow: none;
+  border-color: rgba(44,24,16,0.1);
+}
+.dash-modern .date-pill:hover:not(.date-pill--active) { background: var(--white); }
+.dash-modern .date-pill--active {
+  background: var(--maroon-deep);
+  box-shadow: none;
+}
+.dash-modern .date-pill-num { font-family: inherit; }
+
+.dash-modern .activity-card {
+  background: var(--white);
+  border: 1px solid rgba(44,24,16,0.08);
+  box-shadow: none;
+  padding: 22px 16px;
+}
+.dash-modern .activity-card:hover { transform: none; box-shadow: none; border-color: rgba(44,24,16,0.08); }
+.dash-modern .activity-name { font-size: 13px; color: var(--text-mid); font-weight: 600; text-align: center; }
+.dash-modern .activity-card-header { justify-content: center; margin-bottom: 4px; }
+
+.dash-modern .counter-value-input {
+  font-family: 'Noto Sans Gujarati', -apple-system, sans-serif;
+  font-size: 56px;
+  width: auto;
+  min-width: 140px;
+  border: none;
+  background: transparent;
+  color: var(--maroon-deep);
+}
+.dash-modern .counter-value-input:focus { border-color: transparent; }
+.dash-modern .counter-btn {
+  background: var(--white);
+  border: 1.5px solid rgba(44,24,16,0.12);
+  box-shadow: none;
+  color: var(--maroon-deep);
+}
+.dash-modern .counter-btn--plus { background: var(--gold); border-color: var(--gold); color: var(--maroon-deep); }
+.dash-modern .counter-btn--minus { background: var(--white); }
+
+.dash-clear-link {
+  display: block;
+  margin: 14px auto 0;
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.dash-clear-link:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.dash-modern .pace-grid { gap: 8px; }
+.dash-modern .pace-card {
+  background: var(--white);
+  border: 1px solid rgba(44,24,16,0.08);
+  box-shadow: none;
+}
+.dash-modern .pace-value {
+  font-family: 'Noto Sans Gujarati', -apple-system, sans-serif;
+  font-size: 19px;
+  color: var(--maroon-deep);
+}
+.dash-modern .pace-achieved {
+  background: var(--white);
+  border: 1px solid var(--gold);
+  box-shadow: none;
+  font-family: inherit;
+  color: var(--success);
+}
+
+/* ========================
+   Dashboard — Immersive Mockup
+   A richer, two-column "control room" take: one continuous dark maroon/gold
+   atmosphere (not individual boxes on the light page background) holding
+   glassy translucent panels — a vertical milestone roadmap, a calendar-grid
+   date picker, a daily activity feed and a small analytics chart, all
+   backed by live data. Scoped to .dash-immersive / .dash-stage so it
+   doesn't affect any other page.
+   ======================== */
+.dash-immersive { max-width: 1160px; }
+
+.dash-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  padding: 26px;
+  background:
+    radial-gradient(ellipse 900px 500px at 15% 0%, rgba(232,103,10,0.28) 0%, transparent 60%),
+    radial-gradient(ellipse 900px 600px at 100% 100%, rgba(212,160,23,0.22) 0%, transparent 55%),
+    linear-gradient(160deg, var(--maroon-deep) 0%, var(--maroon) 45%, #3a1206 100%);
+  box-shadow: var(--shadow-md);
+}
+.dash-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23D4A017' fill-opacity='0.05'%3E%3Cpath d='M30 0 L33 27 L60 30 L33 33 L30 60 L27 33 L0 30 L27 27 Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.dash-immersive .dash-hero {
+  position: relative;
+  padding: 12px 10px 30px;
+  margin-bottom: 6px;
+  text-align: center;
+}
+.dash-immersive .dash-hero h1 {
+  font-family: 'Cinzel', serif;
+  color: var(--gold-light);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.25;
+  text-shadow: 0 0 24px rgba(240,200,66,0.35), 0 2px 10px rgba(0,0,0,0.5);
+}
+.dash-immersive .dash-hero p {
+  color: rgba(253,246,227,0.85);
+  font-size: 14px;
+  margin-top: 8px;
+  font-style: italic;
+}
+.dash-immersive .dash-hero p strong { color: var(--gold-light); font-style: normal; }
+
+.dash-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.dash-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+.dash-panel {
+  background: rgba(20,4,4,0.32);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(212,160,23,0.28);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+.dash-panel-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--gold-light);
+  margin-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+
+/* Milestone roadmap */
+.milestone-panel { text-align: center; }
+.milestone-top-badge {
+  display: inline-block;
+  background: rgba(212,160,23,0.18);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 16px;
+  border-radius: 10px;
+  margin-bottom: 22px;
+  box-shadow: 0 0 16px rgba(212,160,23,0.25);
+}
+.milestone-track { position: relative; width: 100%; height: 300px; margin: 0 auto; }
+.milestone-track-line {
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: 4px; margin-left: -2px;
+  background: rgba(253,246,227,0.15);
+  border-radius: 2px;
+}
+.milestone-track-fill {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(212,160,23,0.65);
+  transition: height .3s ease;
+}
+.milestone-row {
+  position: absolute;
+  left: 0; right: 0;
+  display: flex; align-items: center; justify-content: center;
+  gap: 0;
+  transform: translateY(-50%);
+}
+.milestone-badge-slot { flex: 1; display: flex; min-width: 0; }
+.milestone-badge-slot--left { justify-content: flex-end; }
+.milestone-badge-slot--right { justify-content: flex-start; }
+.milestone-badge-wrap { display: flex; align-items: center; gap: 6px; }
+.milestone-badge-slot--left .milestone-badge-wrap { flex-direction: row; }
+.milestone-badge-slot--right .milestone-badge-wrap { flex-direction: row; }
+.milestone-tick { width: 14px; height: 1px; background: rgba(253,246,227,0.3); flex-shrink: 0; }
+.milestone-badge {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(212,160,23,0.25);
+  color: var(--cream);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+.milestone-dot {
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: rgba(253,246,227,0.2);
+  border: 2px solid rgba(253,246,227,0.35);
+  flex-shrink: 0;
+  z-index: 1;
+}
+.milestone-dot--reached {
+  background: var(--gold);
+  border-color: var(--gold-light);
+  box-shadow: 0 0 10px rgba(212,160,23,0.85);
+}
+
+/* Progress panel */
+.dash-immersive .progress-panel .progress-header { color: rgba(253,246,227,0.8); font-size: 12px; }
+.dash-immersive .progress-bar { background: rgba(253,246,227,0.15); height: 8px; }
+.dash-immersive .progress-fill { background: linear-gradient(90deg, var(--saffron), var(--gold)); }
+
+/* Counter panel */
+.dash-immersive .logged-pill {
+  display: inline-block;
+  background: rgba(212,160,23,0.15);
+  border: 1px solid rgba(212,160,23,0.4);
+  color: var(--gold-light);
+  font-size: 12px; font-weight: 600;
+  padding: 5px 12px; border-radius: 8px;
+  margin-bottom: 10px;
+}
+.dash-immersive .counter-value-input {
+  font-family: 'Noto Sans Gujarati', -apple-system, sans-serif;
+  color: var(--cream);
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(253,246,227,0.2);
+}
+.dash-immersive .counter-btn {
+  background: rgba(253,246,227,0.1);
+  border-color: rgba(253,246,227,0.25);
+  color: var(--cream);
+}
+.dash-immersive .counter-btn--plus { background: var(--gold); border-color: var(--gold); color: var(--maroon-deep); }
+.dash-immersive .dash-clear-link { color: var(--gold-light); margin: 10px auto 4px; }
+
+.cal-grid-wrap { margin-top: 16px; border-top: 1px solid rgba(253,246,227,0.15); padding-top: 14px; }
+.cal-grid-header {
+  display: flex; align-items: center; justify-content: space-between;
+  color: var(--cream); font-size: 13px; font-weight: 700; margin-bottom: 10px;
+}
+.cal-grid-header button {
+  background: rgba(253,246,227,0.1);
+  border: 1px solid rgba(253,246,227,0.2);
+  color: var(--cream);
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 15px;
+}
+.cal-grid-weekdays, .cal-grid-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-grid-weekdays span {
+  text-align: center;
+  font-size: 10px;
+  color: rgba(253,246,227,0.5);
+  font-weight: 700;
+  padding-bottom: 4px;
+}
+.cal-day {
+  aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  color: rgba(253,246,227,0.75);
+  font-size: 12px;
+  min-height: 30px;
+  cursor: pointer;
+}
+.cal-day:hover:not(:disabled):not(.cal-day--empty) { background: rgba(253,246,227,0.1); }
+.cal-day:disabled { color: rgba(253,246,227,0.2); cursor: not-allowed; }
+.cal-day--empty { cursor: default; }
+.cal-day--selected {
+  background: var(--gold);
+  color: var(--maroon-deep);
+  font-weight: 700;
+}
+
+/* Activity feed */
+.feed-list { display: flex; flex-direction: column; gap: 8px; }
+.feed-item {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(253,246,227,0.06);
+  border: 1px solid rgba(253,246,227,0.1);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.feed-item--active { background: rgba(212,160,23,0.15); border-color: rgba(212,160,23,0.4); }
+.feed-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(253,246,227,0.3); flex-shrink: 0; }
+.feed-item--active .feed-dot { background: var(--gold-light); }
+.feed-text { font-size: 13px; color: rgba(253,246,227,0.85); }
+.feed-empty { font-size: 12px; color: rgba(253,246,227,0.5); text-align: center; padding: 10px 0; }
+
+.dash-immersive .video-preview-banner {
+  margin-bottom: 0;
+  background: rgba(20,4,4,0.32);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(212,160,23,0.28);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+/* Analytics panel */
+.mini-chart-svg { width: 100%; height: 130px; display: block; margin-bottom: 14px; }
+.mini-chart-empty {
+  font-size: 12px; color: rgba(253,246,227,0.5);
+  text-align: center; padding: 30px 0; margin-bottom: 14px;
+}
+.dash-immersive .pace-grid { gap: 8px; }
+.dash-immersive .pace-card {
+  background: rgba(253,246,227,0.06);
+  border: 1px solid rgba(253,246,227,0.12);
+  box-shadow: none;
+}
+.dash-immersive .pace-value { color: var(--gold-light); font-family: 'Noto Sans Gujarati', -apple-system, sans-serif; }
+.dash-immersive .pace-label { color: rgba(253,246,227,0.6); }
+.dash-immersive .pace-achieved {
+  background: rgba(212,160,23,0.12);
+  border: 1px solid var(--gold);
+  box-shadow: none;
+  font-family: inherit;
+  color: var(--gold-light);
+}
+.dash-immersive .dash-error { color: #ff9b9b; font-size: 12px; margin-bottom: 8px; }
+
+@media (max-width: 860px) {
+  .dash-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .dash-stage { padding: 16px 12px; border-radius: 16px; }
+  .dash-immersive .dash-hero { padding: 6px 4px 22px; }
+  .dash-immersive .dash-hero h1 { font-size: 22px; }
+  .dash-immersive .dash-hero p { font-size: 13px; }
+  .dash-panel { padding: 14px; border-radius: 14px; }
+  .milestone-track { height: 250px; }
+  .milestone-badge { font-size: 9.5px; padding: 3px 7px; }
+  .milestone-tick { width: 8px; }
+  .milestone-top-badge { font-size: 12px; padding: 5px 12px; margin-bottom: 16px; }
+  .dash-immersive .counter-value-input { font-size: 44px; min-width: 110px; }
+  .dash-immersive .pace-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .dash-immersive .pace-value { font-size: 16px; }
+  .dash-immersive .pace-label { font-size: 9px; }
+  .cal-day { font-size: 11px; min-height: 26px; }
+  .cal-grid-header span { font-size: 12px; }
+}
+
+/* ========================
    Profile Page
    ======================== */
 .profile-grid { display: grid; grid-template-columns: 200px 1fr; gap: 16px; margin-bottom: 20px; }
