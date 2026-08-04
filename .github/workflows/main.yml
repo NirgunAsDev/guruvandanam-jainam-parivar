@@ -67,11 +67,6 @@ jobs:
 
       - name: Deploy Backend
         run: |
-          ssh \
-            -i ~/.ssh/id_rsa \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
-
-          set -e
-          source ~/.bashrc
-          bash update_guruvandanam.sh
-          EOF
+          ssh -i ~/.ssh/id_rsa \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            'bash -ic "set -e && bash update_guruvandanam.sh"'

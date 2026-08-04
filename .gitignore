@@ -19,3 +19,6 @@ nohup.out
 
 # OS
 .DS_Store
+
+# claude code worktrees
+.claude/worktrees/
