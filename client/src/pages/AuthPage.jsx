@@ -265,7 +265,7 @@ export default function AuthPage({ mode }) {
           <div className="auth-info">
             <h3>{T.competitionRules}</h3>
             <ul>
-              <li>૦૧ એપ્રિલ ૨૦૨૬, બુધવાર → ૩૧ જુલાઈ ૨૦૨૬, શુક્રવાર</li>
+              <li>{BRAND.competitionStartDisplay} → {BRAND.competitionEndDisplay}</li>
               <li>Registration ફી {BRAND.registrationFeeDisplay}/-</li>
             </ul>
             <div className="payment-qr-section">

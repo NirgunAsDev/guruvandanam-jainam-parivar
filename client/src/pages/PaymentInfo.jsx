@@ -176,7 +176,7 @@ export default function PaymentInfo() {
       <div className="section-card">
         <h2>Competition Rules</h2>
         <ul style={{ lineHeight: '2', fontSize: '1.05rem' }}>
-          <li>૦૧ એપ્રિલ ૨૦૨૬, બુધવાર → ૩૧ જુલાઈ ૨૦૨૬, શુક્રવાર</li>
+          <li>{BRAND.competitionStartDisplay} → {BRAND.competitionEndDisplay}</li>
           <li>Registration ફી {BRAND.registrationFeeDisplay}/-</li>
         </ul>
       </div>
