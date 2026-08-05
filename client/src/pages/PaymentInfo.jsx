@@ -74,6 +74,7 @@ export default function PaymentInfo() {
       prefill: {
         name: user?.name || '',
         email: user?.email || '',
+        contact: user?.phone || '',
       },
       theme: { color: '#6c63ff' },
       method: {
