@@ -199,9 +199,44 @@ export default function PaymentInfo() {
             </div>
           )}
 
-          {/* ── UPI QR (always visible when not paid) ── */}
+          {/* ── Razorpay checkout ── */}
           {!feePaid && (
             <>
+              {error && <div className="alert alert-error" style={{ marginBottom: '1rem' }}>{error}</div>}
+
+              {verifyError && (
+                <div className="alert alert-error" style={{ marginBottom: '1rem' }}>
+                  {verifyError.message}
+                  {verifyError.paymentId && (
+                    <div style={{ fontSize: '0.8rem', marginTop: '0.4rem', opacity: 0.7 }}>
+                      Payment ID: {verifyError.paymentId}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {scriptFailed && (
+                <div className="alert alert-error" style={{ marginBottom: '1rem' }}>
+                  Could not load the payment gateway. Please check your connection and try again, or pay via UPI below.
+                </div>
+              )}
+
+              {dismissedAfterFail && (
+                <div className="alert alert-error" style={{ marginBottom: '1rem' }}>
+                  Payment failed. Please try again or pay via UPI below.
+                </div>
+              )}
+
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={handlePayClick}
+                disabled={loading}
+                style={{ marginBottom: '1rem' }}
+              >
+                {loading ? (status || 'Processing…') : `Pay ${BRAND.registrationFeeDisplay} with Razorpay`}
+              </button>
+
               <p style={{ color: '#666', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
                 — or pay via UPI —
               </p>

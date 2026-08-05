@@ -40,6 +40,10 @@ router.post('/log', authenticateToken, (req, res) => {
     return res.status(403).json({ error: `You have been disqualified from the ${config.BRAND_NAME}.` });
   }
 
+  if (!req.isAdmin && !req.user.registration_fee_paid) {
+    return res.status(403).json({ error: `Registration fee of ${config.REGISTRATION_FEE_DISPLAY} must be paid before logging guruvandans.` });
+  }
+
   const delta = parseInt(count);
   if (!delta) {
     return res.status(400).json({ error: 'A non-zero count is required' });

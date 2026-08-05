@@ -120,18 +120,6 @@ function Layout({ children }) {
         </div>
       )}
 
-      {!user?.is_disqualified && !user?.is_admin && (
-        (user?.total_guruvandans || 0) >= 1008 ? (
-          <div className="shortlist-banner shortlist-banner--yes">
-            🎉 Congratulations! You have been shortlisted for the prize.
-          </div>
-        ) : (
-          <div className="shortlist-banner shortlist-banner--no">
-            You have not been shortlisted for the prize.
-          </div>
-        )
-      )}
-
       <main className="main-content">{children}</main>
     </div>
   );
