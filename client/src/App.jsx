@@ -143,6 +143,9 @@ function PrivateRoute({ children }) {
   if (!user) return <Navigate to="/login" replace />;
   if (!meLoaded) return null;
   if (!user.phone && location.pathname !== '/account' && location.pathname !== '/payment') return <Navigate to="/account" replace />;
+  if (!user.is_admin && !user.registration_fee_paid && location.pathname !== '/payment' && location.pathname !== '/account') {
+    return <Navigate to="/payment" replace />;
+  }
   return <Layout>{children}</Layout>;
 }
 

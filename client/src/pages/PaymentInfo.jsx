@@ -177,14 +177,14 @@ export default function PaymentInfo() {
         <h2>Competition Rules</h2>
         <ul style={{ lineHeight: '2', fontSize: '1.05rem' }}>
           <li>૦૧ એપ્રિલ ૨૦૨૬, બુધવાર → ૩૧ જુલાઈ ૨૦૨૬, શુક્રવાર</li>
-          <li>Registration ફી ₹૨૦૦/-</li>
+          <li>Registration ફી {BRAND.registrationFeeDisplay}/-</li>
         </ul>
       </div>
 
       <div className="section-card">
         <div className="payment-qr-section" style={{ textAlign: 'center' }}>
           <p className="payment-qr-title" style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>
-            Registration ફી ₹200
+            Registration ફી {BRAND.registrationFeeDisplay}
           </p>
 
           {/* ── Already paid ── */}
@@ -215,8 +215,8 @@ export default function PaymentInfo() {
                 UPI ID: <strong>devisinghbca96@oksbi</strong>
               </p>
               <div className="payment-warning" style={{ marginTop: '1rem' }}>
-                ⚠️ જો ₹200 ફી ભરવામાં નહીં આવે, તો activity points ગણવામાં આવશે નહીં.<br />
-                <span>If ₹200 registration fee is not paid, activity points will not be counted.</span>
+                ⚠️ જો {BRAND.registrationFeeDisplay} ફી ભરવામાં નહીં આવે, તો activity points ગણવામાં આવશે નહીં.<br />
+                <span>If {BRAND.registrationFeeDisplay} registration fee is not paid, activity points will not be counted.</span>
               </div>
               <p style={{ fontSize: '0.8rem', color: '#999', marginTop: '0.75rem' }}>
                 

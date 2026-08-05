@@ -74,7 +74,7 @@ export default function AuthPage({ mode }) {
   const navigate = useNavigate();
   const isLogin = mode === 'login';
 
-  const [form, setForm] = useState({ name: '', email: '', password: '', dob: '', phone: '', address: '', city: '', state: '', zipcode: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', dob: '', phone: '', address: '', city: '', state: '', zipcode: '', sangh_name: '', mahatma_name: '', mahatma_thana: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
@@ -102,7 +102,7 @@ export default function AuthPage({ mode }) {
       }
       const data = isLogin
         ? await api.login({ email: form.email, password: form.password })
-        : await api.register({ name: form.name, email: form.email, password: form.password, age, phone: form.phone, address: form.address, city: form.city, state: form.state, zipcode: form.zipcode });
+        : await api.register({ name: form.name, email: form.email, password: form.password, age, phone: form.phone, address: form.address, city: form.city, state: form.state, zipcode: form.zipcode, sangh_name: form.sangh_name, mahatma_name: form.mahatma_name, mahatma_thana: form.mahatma_thana });
       login(data.user, data.token);
       navigate(!data.user.phone ? '/account' : '/landing');
     } catch (err) {
@@ -221,6 +221,24 @@ export default function AuthPage({ mode }) {
                 <input type="text" name="zipcode" value={form.zipcode} onChange={handleChange} placeholder="ZIP code" />
               </div>
             )}
+            {!isLogin && (
+              <div className="form-group">
+                <label>Sangh Name</label>
+                <input type="text" name="sangh_name" value={form.sangh_name} onChange={handleChange} placeholder="Sangh name" required />
+              </div>
+            )}
+            {!isLogin && (
+              <div className="form-group">
+                <label>Mahatma Name</label>
+                <input type="text" name="mahatma_name" value={form.mahatma_name} onChange={handleChange} placeholder="Mahatma name" required />
+              </div>
+            )}
+            {!isLogin && (
+              <div className="form-group">
+                <label>Mahatma Thana</label>
+                <input type="text" name="mahatma_thana" value={form.mahatma_thana} onChange={handleChange} placeholder="Mahatma thana" required />
+              </div>
+            )}
             <button type="submit" className="btn-primary btn-full" disabled={loading}>
               {loading ? T.loading : isLogin ? T.signIn : T.register}
             </button>
@@ -248,15 +266,15 @@ export default function AuthPage({ mode }) {
             <h3>{T.competitionRules}</h3>
             <ul>
               <li>૦૧ એપ્રિલ ૨૦૨૬, બુધવાર → ૩૧ જુલાઈ ૨૦૨૬, શુક્રવાર</li>
-              <li>Registration ફી ₹૨૦૦/-</li>
+              <li>Registration ફી {BRAND.registrationFeeDisplay}/-</li>
             </ul>
             <div className="payment-qr-section">
               <p className="payment-qr-title">📲 Registration ફી ચૂકવો</p>
               <img src="/payment-qr.png" alt="UPI Payment QR" className="payment-qr-img" />
               <p className="payment-upi-id">UPI ID: <strong>devisinghbca96@oksbi</strong></p>
               <div className="payment-warning">
-                ⚠️ જો ₹200 ફી ભરવામાં નહીં આવે, તો activity points ગણવામાં આવશે નહીં.<br />
-                <span>If ₹200 registration fee is not paid, activity points will not be counted.</span>
+                ⚠️ જો {BRAND.registrationFeeDisplay} ફી ભરવામાં નહીં આવે, તો activity points ગણવામાં આવશે નહીં.<br />
+                <span>If {BRAND.registrationFeeDisplay} registration fee is not paid, activity points will not be counted.</span>
               </div>
             </div>
           </div>

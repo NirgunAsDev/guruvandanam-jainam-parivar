@@ -5,6 +5,7 @@ import { LangContext, t, BRAND } from '../lang';
 import VideoModal from '../components/VideoModal';
 
 const TARGET = 1008;
+const DAILY_MAX = 30;
 const MILESTONE_FRACTIONS = [1, 0.75, 0.5, 0.25, 0];
 
 function toLocalDateStr(date) {
@@ -126,11 +127,15 @@ export default function Dashboard() {
 
   const [selectedDate, setSelectedDate] = useState(toLocalDateStr(new Date()));
   const [dayCount, setDayCount] = useState(0);
+  // Mirrors lastSyncedRef as state so the "logged/added" pill can re-render —
+  // it only changes once a commit actually succeeds, not on every +/- tap.
+  const [syncedCount, setSyncedCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [showVideo, setShowVideo] = useState(false);
   const [dailyLogs, setDailyLogs] = useState([]);
+  const [toast, setToast] = useState(null);
   const { activityLang } = useContext(LangContext);
 
   // Tracks the last value confirmed by the server for the currently selected
@@ -138,6 +143,13 @@ export default function Dashboard() {
   // chained in order (avoids lost updates from rapid +/- taps).
   const lastSyncedRef = useRef(0);
   const queueRef = useRef(Promise.resolve());
+  const toastTimerRef = useRef(null);
+
+  function showToast(message) {
+    setToast(message);
+    clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setToast(null), 3000);
+  }
 
   function refreshSummary() {
     api.getSummary().then(res => setDailyLogs(res.dailyLogs || [])).catch(() => {});
@@ -149,6 +161,7 @@ export default function Dashboard() {
     api.getGuruvandanLogs(selectedDate).then(logs => {
       const c = logs[0]?.count || 0;
       setDayCount(c);
+      setSyncedCount(c);
       lastSyncedRef.current = c;
     }).finally(() => setLoading(false));
   }, [selectedDate]);
@@ -167,18 +180,19 @@ export default function Dashboard() {
   const goalReached = remaining === 0;
   const msPerDay = 24 * 60 * 60 * 1000;
   const daysLeft = Math.max(1, Math.ceil((new Date(BRAND.competitionEnd + 'T23:59:59') - new Date(istDateStr + 'T00:00:00')) / msPerDay));
-  // One decimal place so the hint visibly shifts as points come in, instead of
-  // only changing once remaining crosses a whole multiple of daysLeft.
-  const perDayNeeded = remaining / daysLeft;
-  const perWeekNeeded = perDayNeeded * 7;
+  const perDayNeeded = Math.ceil(remaining / daysLeft);
+  const perWeekNeeded = Math.ceil((remaining / daysLeft) * 7);
 
   const milestones = MILESTONE_FRACTIONS.map(f => Math.round(TARGET * f));
   const chartData = [...dailyLogs].reverse().slice(-7);
 
   // Sends a delta for the date it was created for, chaining requests so rapid
-  // taps resolve in order instead of racing each other.
-  function commitDelta(delta, date) {
+  // taps resolve in order instead of racing each other. The +/- buttons only
+  // adjust the on-screen count; nothing is sent to the server until this is
+  // called (from the "Add Guruvandan" button or a manual-typed commit).
+  function commitDelta(delta, date, { announce = false } = {}) {
     if (!delta) return;
+    const prevSynced = date === selectedDate ? lastSyncedRef.current : null;
     setSaving(true);
     setError(null);
     queueRef.current = queueRef.current
@@ -186,10 +200,19 @@ export default function Dashboard() {
       .then(res => {
         if (date === selectedDate) {
           lastSyncedRef.current = res.log.count;
+          setSyncedCount(res.log.count);
           setDayCount(res.log.count);
         }
         updateUserPoints(res.total_guruvandans);
         refreshSummary();
+        if (announce && prevSynced !== null) {
+          const actualDelta = res.log.count - prevSynced;
+          if (actualDelta > 0) {
+            showToast(`You successfully added ${actualDelta} guruvandan${actualDelta === 1 ? '' : 's'}.`);
+          } else if (actualDelta < 0) {
+            showToast(`Updated — ${Math.abs(actualDelta)} guruvandan${Math.abs(actualDelta) === 1 ? '' : 's'} removed.`);
+          }
+        }
       })
       .catch(e => {
         setError(e.message);
@@ -199,23 +222,23 @@ export default function Dashboard() {
   }
 
   function handleIncrement() {
-    const date = selectedDate;
-    setDayCount(c => c + 1);
-    commitDelta(1, date);
+    setDayCount(c => Math.min(DAILY_MAX, c + 1));
   }
   function handleDecrement() {
     if (dayCount <= 0) return;
-    const date = selectedDate;
     setDayCount(c => Math.max(0, c - 1));
-    commitDelta(-1, date);
+  }
+  function handleAddClick() {
+    const delta = dayCount - lastSyncedRef.current;
+    commitDelta(delta, selectedDate, { announce: true });
   }
   function handleManualChange(e) {
     const v = e.target.value;
-    setDayCount(v === '' ? 0 : Math.max(0, parseInt(v) || 0));
+    setDayCount(v === '' ? 0 : Math.min(DAILY_MAX, Math.max(0, parseInt(v) || 0)));
   }
   function handleManualCommit() {
     const delta = dayCount - lastSyncedRef.current;
-    commitDelta(delta, selectedDate);
+    commitDelta(delta, selectedDate, { announce: true });
   }
 
   async function handleClearDay() {
@@ -224,6 +247,7 @@ export default function Dashboard() {
     try {
       const res = await api.deleteGuruvandanLog(selectedDate);
       setDayCount(0);
+      setSyncedCount(0);
       lastSyncedRef.current = 0;
       updateUserPoints(res.total_guruvandans);
       refreshSummary();
@@ -254,7 +278,7 @@ export default function Dashboard() {
         {/* LEFT COLUMN */}
         <div className="dash-col">
           <div className="dash-panel milestone-panel">
-            <div className="milestone-top-badge">{TARGET} Goal</div>
+            <div className="milestone-top-badge">{TARGET} Guruvandan</div>
             <div className="milestone-track">
               <div className="milestone-track-line">
                 <div className="milestone-track-fill" style={{ height: `${progress}%` }} />
@@ -268,7 +292,7 @@ export default function Dashboard() {
                     <div className="milestone-badge-slot milestone-badge-slot--left">
                       {side === 'left' && (
                         <span className="milestone-badge-wrap">
-                          <span className="milestone-badge">{m === 0 ? 'Start' : `${m} Goal`}</span>
+                          <span className="milestone-badge">{m === 0 ? 'Start' : `${m} Guruvandan`}</span>
                           <span className="milestone-tick" />
                         </span>
                       )}
@@ -278,7 +302,7 @@ export default function Dashboard() {
                       {side === 'right' && (
                         <span className="milestone-badge-wrap">
                           <span className="milestone-tick" />
-                          <span className="milestone-badge">{m === 0 ? 'Start' : `${m} Goal`}</span>
+                          <span className="milestone-badge">{m === 0 ? 'Start' : `${m} Guruvandan`}</span>
                         </span>
                       )}
                     </div>
@@ -302,17 +326,19 @@ export default function Dashboard() {
             <h3 className="dash-panel-title">Counter Logging Tool</h3>
 
             {error && <div className="dash-error">{error}</div>}
+            {toast && <div className="dash-toast">{toast}</div>}
 
             {loading ? (
               <div className="loading-spinner">{T.loadingActivities}</div>
             ) : isEditable ? (
               <>
-                <div className="logged-pill">{dayCount} {T.guruvandansLogged}</div>
+                <div className="logged-pill">{syncedCount} {T.guruvandansLogged}</div>
                 <div className="counter-stepper">
                   <input
                     type="number"
                     className="counter-value-input"
                     min="0"
+                    max={DAILY_MAX}
                     value={dayCount}
                     onChange={handleManualChange}
                     onBlur={handleManualCommit}
@@ -333,14 +359,25 @@ export default function Dashboard() {
                       type="button"
                       className="counter-btn counter-btn--plus"
                       onClick={handleIncrement}
-                      disabled={!isUnlocked}
+                      disabled={!isUnlocked || dayCount >= DAILY_MAX}
                       aria-label="Increase"
                     >
                       +
                     </button>
                   </div>
                 </div>
-                {dayCount > 0 && (
+                {dayCount >= DAILY_MAX && (
+                  <div className="dash-cap-notice">Maximum {DAILY_MAX} guruvandan per day.</div>
+                )}
+                <button
+                  type="button"
+                  className="btn-primary dash-add-btn"
+                  onClick={handleAddClick}
+                  disabled={!isUnlocked || saving || dayCount === syncedCount}
+                >
+                  {saving ? '...' : 'Add Guruvandan'}
+                </button>
+                {syncedCount > 0 && (
                   <button className="dash-clear-link" onClick={handleClearDay} disabled={saving || !isUnlocked}>
                     {saving ? '...' : T.remove}
                   </button>
@@ -397,11 +434,11 @@ export default function Dashboard() {
                   <div className="pace-label">{T.daysLeftLabel}</div>
                 </div>
                 <div className="pace-card">
-                  <div className="pace-value">{perDayNeeded.toFixed(1)}</div>
+                  <div className="pace-value">{perDayNeeded}</div>
                   <div className="pace-label">{T.perDayLabel}</div>
                 </div>
                 <div className="pace-card">
-                  <div className="pace-value">{perWeekNeeded.toFixed(1)}</div>
+                  <div className="pace-value">{perWeekNeeded}</div>
                   <div className="pace-label">{T.perWeekLabel}</div>
                 </div>
               </div>

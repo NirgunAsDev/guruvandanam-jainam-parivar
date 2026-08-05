@@ -47,7 +47,12 @@ router.post('/log', authenticateToken, (req, res) => {
 
   const existing = db.prepare('SELECT * FROM guruvandan_logs WHERE user_id = ? AND date = ?').get(req.user.id, logDate);
   const currentCount = existing ? existing.count : 0;
-  const newCount = Math.max(0, currentCount + delta);
+
+  if (delta > 0 && currentCount >= config.DAILY_GURUVANDAN_MAX) {
+    return res.status(400).json({ error: `Maximum ${config.DAILY_GURUVANDAN_MAX} guruvandan per day allowed.` });
+  }
+
+  const newCount = Math.min(config.DAILY_GURUVANDAN_MAX, Math.max(0, currentCount + delta));
   const actualDelta = newCount - currentCount;
 
   let log;

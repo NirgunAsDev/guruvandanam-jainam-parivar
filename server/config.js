@@ -16,6 +16,8 @@ module.exports = {
   REGISTRATION_FEE_PAISE: brand.registrationFeePaise,
   REGISTRATION_FEE_DISPLAY: brand.registrationFeeDisplay,
 
+  DAILY_GURUVANDAN_MAX: 30,
+
   // Server-only — env-driven, never expose via a file the client also imports
   JWT_SECRET: process.env.JWT_SECRET || 'aaradhna_patrak_secret_key_2025',
   ADMIN_EMAIL: process.env.ADMIN_EMAIL || brand.adminEmailPlaceholder,

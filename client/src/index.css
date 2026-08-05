@@ -1211,6 +1211,33 @@ body::after {
   color: var(--gold-light);
 }
 .dash-immersive .dash-error { color: #ff9b9b; font-size: 12px; margin-bottom: 8px; }
+.dash-immersive .dash-toast {
+  color: #a8f0c0;
+  background: rgba(43,163,89,0.15);
+  border: 1px solid rgba(43,163,89,0.4);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.dash-immersive .dash-cap-notice {
+  color: rgba(253,246,227,0.6);
+  font-size: 12px;
+  margin-top: 4px;
+}
+.dash-immersive .dash-add-btn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--gold), #f0c230);
+  color: var(--maroon-deep);
+  border: none;
+  cursor: pointer;
+}
+.dash-immersive .dash-add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 @media (max-width: 860px) {
   .dash-grid { grid-template-columns: 1fr; }

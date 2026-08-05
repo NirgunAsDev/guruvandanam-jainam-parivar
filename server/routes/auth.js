@@ -22,13 +22,16 @@ function makeToken(userId, loginType) {
 // POST /api/auth/register — always a regular user
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, age, phone, address, city, state, zipcode } = req.body;
+    const { name, email, password, age, phone, address, city, state, zipcode, sangh_name, mahatma_name, mahatma_thana } = req.body;
 
     if (!name || !email || !password || !age) {
       return res.status(400).json({ error: 'All fields are required' });
     }
     if (age < 6 || age > 60) {
       return res.status(400).json({ error: 'Age must be between 6 and 60' });
+    }
+    if (!sangh_name || !mahatma_name || !mahatma_thana) {
+      return res.status(400).json({ error: 'Sangh name, Mahatma name and Mahatma thana are required' });
     }
 
     const existingUser = db.prepare('SELECT id FROM users WHERE LOWER(email) = LOWER(?)').get(email);
@@ -40,8 +43,8 @@ router.post('/register', async (req, res) => {
     const group_num = assignGroup(parseInt(age));
 
     const result = db.prepare(
-      'INSERT INTO users (name, email, password, age, group_num, phone, address, city, state, zipcode, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-    ).run(name, email, hashedPassword, parseInt(age), group_num, phone || '', address || '', city || '', state || '', zipcode || '', 0);
+      'INSERT INTO users (name, email, password, age, group_num, phone, address, city, state, zipcode, sangh_name, mahatma_name, mahatma_thana, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    ).run(name, email, hashedPassword, parseInt(age), group_num, phone || '', address || '', city || '', state || '', zipcode || '', sangh_name, mahatma_name, mahatma_thana, 0);
 
     const token = makeToken(result.lastInsertRowid, 'user');
 
@@ -56,6 +59,9 @@ router.post('/register', async (req, res) => {
       city: city || '',
       state: state || '',
       zipcode: zipcode || '',
+      sangh_name,
+      mahatma_name,
+      mahatma_thana,
       total_guruvandans: 0,
       registration_fee_paid: 0,
       is_admin: 0,
@@ -107,6 +113,9 @@ router.post('/login', async (req, res) => {
         city: user.city || '',
         state: user.state || '',
         zipcode: user.zipcode || '',
+        sangh_name: user.sangh_name || '',
+        mahatma_name: user.mahatma_name || '',
+        mahatma_thana: user.mahatma_thana || '',
         total_guruvandans: user.total_guruvandans,
         registration_fee_paid: user.registration_fee_paid,
         is_admin: 0
@@ -131,6 +140,9 @@ router.get('/me', authenticateToken, (req, res) => {
     city: req.user.city || '',
     state: req.user.state || '',
     zipcode: req.user.zipcode || '',
+    sangh_name: req.user.sangh_name || '',
+    mahatma_name: req.user.mahatma_name || '',
+    mahatma_thana: req.user.mahatma_thana || '',
     total_guruvandans: req.user.total_guruvandans,
     registration_fee_paid: req.user.registration_fee_paid || 0,
     razorpay_payment_id: req.user.razorpay_payment_id || '',

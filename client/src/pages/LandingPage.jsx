@@ -1,76 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../api';
 import { BRAND } from '../lang';
-
-
-function LocalVideoLandingModal({ videoUrl, onClose }) {
-  const [playError, setPlayError] = useState(false);
-
-  return (
-    <div className="yt-modal-overlay">
-      <div className="yt-modal-card">
-        <div className="yt-modal-header">
-          <h3 className="yt-modal-title">Welcome</h3>
-          <button onClick={onClose} className="yt-modal-close-btn" title="Close Video">✕</button>
-        </div>
-        <div className="yt-modal-video-wrap">
-          <video
-            src={videoUrl}
-            className="yt-modal-iframe"
-            controls
-            autoPlay
-            playsInline
-            onError={() => setPlayError(true)}
-            onPlay={() => setPlayError(false)}
-            style={{ objectFit: 'contain' }}
-          />
-          {playError && (
-             <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', color: 'white' }}>
-               <p style={{background: 'rgba(0,0,0,0.8)', padding: '10px 20px', borderRadius: 8}}>Please click play to start the video.</p>
-             </div>
-          )}
-        </div>
-        <div className="yt-modal-footer">
-          <button onClick={onClose} className="yt-modal-continue-btn">Continue to App →</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const [videoUrl, setVideoUrl] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-
-  useEffect(() => {
-    // Fetch the stored video URL. Always show if a URL exists.
-    api.getLandingVideo()
-      .then(res => {
-        if (res.landing_video_url) {
-          setVideoUrl(res.landing_video_url);
-          setShowModal(true);
-        }
-      })
-      .catch(() => {/* silently ignore – video is optional */});
-  }, []);
-
-  const handleClose = useCallback(() => {
-    setShowModal(false);
-  }, []);
 
   return (
     <>
-      {/* ── Video modal overlay ── */}
-      {showModal && videoUrl && (
-        <LocalVideoLandingModal videoUrl={videoUrl} onClose={handleClose} />
-      )}
-
-      {/* ── Landing page content (blurred while modal is open) ── */}
-      <div className={`landing-page${showModal ? ' landing-page--blurred' : ''}`}>
+      {/* ── Landing page content ── */}
+      <div className="landing-page">
         <div className="landing-container">
 
           {/* Top benediction lines */}

@@ -105,6 +105,11 @@ function UserDetailPanel({ userId, onClose, T }) {
                     ? <span className="detail-badge detail-badge--green">✓ Fee Paid</span>
                     : <span className="detail-badge detail-badge--red">✕ Fee Pending</span>}
                 </div>
+                {(data.user.sangh_name || data.user.mahatma_name || data.user.mahatma_thana) && (
+                  <div className="detail-user-meta">
+                    Sangh: {data.user.sangh_name || '—'} · Mahatma: {data.user.mahatma_name || '—'} · Thana: {data.user.mahatma_thana || '—'}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -415,21 +420,24 @@ export default function Admin() {
   });
 
   function exportCSV() {
-    const headers = ['Rank', 'Name', 'Email', 'Phone', 'Age', 'Group', 'Total Guruvandans', 'Fee Status', 'Admin', 'Address', 'City', 'State', 'ZIP Code', 'Joined'];
+    const headers = ['Rank', 'Name', 'Email', 'Phone', 'Age', 'Group', 'Total Guruvandans', 'Fee Status', 'Admin', 'Address', 'City', 'State', 'ZIP Code', 'Sangh Name', 'Mahatma Name', 'Mahatma Thana', 'Joined'];
     const rows = users.map((u, i) => [
       i + 1,
       u.name,
       u.email,
+      u.phone || '',
       u.age,
       `G${u.group_num}`,
       u.total_guruvandans,
       u.registration_fee_paid ? 'Paid' : 'Pending',
       u.is_admin ? 'Yes' : 'No',
-      u.phone || '',
       u.address || '',
       u.city || '',
       u.state || '',
       u.zipcode || '',
+      u.sangh_name || '',
+      u.mahatma_name || '',
+      u.mahatma_thana || '',
       u.created_at ? u.created_at.slice(0, 10) : '',
     ]);
     const csv = [headers, ...rows]

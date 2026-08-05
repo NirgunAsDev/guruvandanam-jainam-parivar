@@ -102,6 +102,11 @@ export default function AdminUserDetail() {
           <div className="user-detail-meta" style={{ marginTop: 4 }}>
             Joined {u.created_at?.split('T')[0]}
           </div>
+          {(u.sangh_name || u.mahatma_name || u.mahatma_thana) && (
+            <div className="user-detail-meta" style={{ marginTop: 4 }}>
+              Sangh: {u.sangh_name || '—'} · Mahatma: {u.mahatma_name || '—'} · Thana: {u.mahatma_thana || '—'}
+            </div>
+          )}
           <div style={{ marginTop: 10 }}>
             <button
               className={`btn-sm ${u.is_disqualified ? 'btn-primary' : 'btn-danger'}`}

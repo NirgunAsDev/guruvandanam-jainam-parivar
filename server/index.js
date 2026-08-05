@@ -34,8 +34,10 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/guruvandan', guruvandanRoutes);
 
+const { authenticateToken, requireAdmin } = require('./middleware/auth');
+
 // Leaderboard
-app.get('/api/leaderboard', (req, res) => {
+app.get('/api/leaderboard', authenticateToken, (req, res) => {
   const users = db.prepare(
     'SELECT id, name, age, group_num, total_guruvandans FROM users WHERE is_deleted = 0 AND is_disqualified = 0 ORDER BY total_guruvandans DESC LIMIT 50'
   ).all();
@@ -43,30 +45,24 @@ app.get('/api/leaderboard', (req, res) => {
 });
 
 // Admin: list all users
-const { authenticateToken, requireAdmin } = require('./middleware/auth');
 app.get('/api/admin/users', authenticateToken, requireAdmin, (req, res) => {
   const showDeleted = req.query.deleted === '1';
   const showDisqualified = req.query.disqualified === '1';
 
-  let query, params;
-  if (showDeleted) {
-    query = `SELECT id, name, email, age, group_num, total_guruvandans, is_admin, registration_fee_paid,
-                    phone, address, city, state, zipcode, created_at, is_deleted, is_disqualified
-             FROM users WHERE is_deleted = 1 ORDER BY total_guruvandans DESC`;
-    params = [];
-  } else if (showDisqualified) {
-    query = `SELECT id, name, email, age, group_num, total_guruvandans, is_admin, registration_fee_paid,
-                    phone, address, city, state, zipcode, created_at, is_deleted, is_disqualified
-             FROM users WHERE is_deleted = 0 AND is_disqualified = 1 ORDER BY total_guruvandans DESC`;
-    params = [];
-  } else {
-    query = `SELECT id, name, email, age, group_num, total_guruvandans, is_admin, registration_fee_paid,
-                    phone, address, city, state, zipcode, created_at, is_deleted, is_disqualified
-             FROM users WHERE is_deleted = 0 AND is_disqualified = 0 ORDER BY total_guruvandans DESC`;
-    params = [];
-  }
+  const columns = `id, name, email, age, group_num, total_guruvandans, is_admin, registration_fee_paid,
+                    phone, address, city, state, zipcode, sangh_name, mahatma_name, mahatma_thana, created_at, is_deleted, is_disqualified`;
 
-  res.json(db.prepare(query).all(...params));
+  let whereClause;
+  if (showDeleted) {
+    whereClause = 'WHERE is_deleted = 1';
+  } else if (showDisqualified) {
+    whereClause = 'WHERE is_deleted = 0 AND is_disqualified = 1';
+  } else {
+    whereClause = 'WHERE is_deleted = 0 AND is_disqualified = 0';
+  }
+  const query = `SELECT ${columns} FROM users ${whereClause} ORDER BY total_guruvandans DESC`;
+
+  res.json(db.prepare(query).all());
 });
 
 // Admin: toggle fee paid
@@ -135,7 +131,7 @@ app.get('/api/admin/users/:id/logs', authenticateToken, requireAdmin, (req, res)
 app.get('/api/admin/users/:id/summary', authenticateToken, requireAdmin, (req, res) => {
   const { id } = req.params;
   const user = db.prepare(
-    'SELECT id, name, email, age, group_num, total_guruvandans, registration_fee_paid, created_at, is_disqualified FROM users WHERE id = ?'
+    'SELECT id, name, email, age, group_num, phone, address, city, state, zipcode, sangh_name, mahatma_name, mahatma_thana, total_guruvandans, registration_fee_paid, created_at, is_disqualified FROM users WHERE id = ?'
   ).get(id);
   if (!user) return res.status(404).json({ error: 'User not found' });
 

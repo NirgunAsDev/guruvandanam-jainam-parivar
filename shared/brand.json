@@ -10,7 +10,7 @@
   "competitionEnd": "2026-12-31",
   "competitionEndDisplay": "31st December 2026",
   "bumperUnlockDate": "2026-07-01",
-  "registrationFeePaise": 20000,
-  "registrationFeeDisplay": "₹200",
+  "registrationFeePaise": 10000,
+  "registrationFeeDisplay": "₹100",
   "adminEmailPlaceholder": "admin@aaradhna.com"
 }

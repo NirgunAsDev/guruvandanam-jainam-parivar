@@ -23,6 +23,9 @@ db.exec(`
     total_guruvandans INTEGER DEFAULT 0,
     is_admin INTEGER DEFAULT 0,
     registration_fee_paid INTEGER DEFAULT 0,
+    sangh_name TEXT DEFAULT '',
+    mahatma_name TEXT DEFAULT '',
+    mahatma_thana TEXT DEFAULT '',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -46,6 +49,11 @@ for (const col of ['phone', 'address', 'city', 'state', 'zipcode']) {
 }
 try { db.exec(`ALTER TABLE users ADD COLUMN is_deleted INTEGER DEFAULT 0`); } catch (_) {}
 try { db.exec(`ALTER TABLE users ADD COLUMN is_disqualified INTEGER DEFAULT 0`); } catch (_) {}
+
+// Sangh / Mahatma columns for existing databases that predate this migration
+for (const col of ['sangh_name', 'mahatma_name', 'mahatma_thana']) {
+  try { db.exec(`ALTER TABLE users ADD COLUMN ${col} TEXT DEFAULT ''`); } catch (_) {}
+}
 
 // Razorpay payment columns
 try { db.exec(`ALTER TABLE users ADD COLUMN razorpay_payment_id TEXT DEFAULT ''`); } catch (_) {}

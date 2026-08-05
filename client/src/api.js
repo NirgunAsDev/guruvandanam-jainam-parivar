@@ -59,7 +59,7 @@ export const api = {
 
   // Leaderboard
   getLeaderboard: () =>
-    fetch(`${BASE}/leaderboard`).then(handleResponse),
+    fetch(`${BASE}/leaderboard`, { headers: authHeaders() }).then(handleResponse),
 
   // Payment
   createOrder: () =>
