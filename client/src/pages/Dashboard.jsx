@@ -283,6 +283,9 @@ export default function Dashboard() {
               <div className="milestone-track-line">
                 <div className="milestone-track-fill" style={{ height: `${progress}%` }} />
               </div>
+              <div className="milestone-current-marker" style={{ bottom: `${progress}%` }} title={`${totalGuruvandans} Guruvandan`}>
+                <span className="milestone-current-marker-count">{totalGuruvandans}</span>
+              </div>
               {milestones.map((m, i) => {
                 const reached = totalGuruvandans >= m;
                 const side = i % 2 === 0 ? 'right' : 'left';

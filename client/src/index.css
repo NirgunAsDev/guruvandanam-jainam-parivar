@@ -1090,6 +1090,48 @@ body::after {
   box-shadow: 0 0 10px rgba(212,160,23,0.85);
 }
 
+/* Marker that pins the user's exact current standing on the track. The
+   height-based fill alone barely moves for small point changes (a single
+   day's worth is a few percent of the full 1008 track), so this gives an
+   always-visible, precisely positioned indicator that shifts with every
+   point earned. */
+.milestone-current-marker {
+  position: absolute;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, 50%);
+  transition: bottom .4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.milestone-current-marker::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--gold-light), var(--gold));
+  box-shadow: 0 0 0 4px rgba(212,160,23,0.2), 0 0 14px rgba(212,160,23,0.9);
+  animation: currentMarkerPulse 1.8s ease-in-out infinite;
+}
+.milestone-current-marker-count {
+  position: relative;
+  margin-left: 26px;
+  background: var(--gold);
+  color: var(--maroon-deep);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 8px;
+  white-space: nowrap;
+  box-shadow: 0 0 10px rgba(212,160,23,0.6);
+}
+@keyframes currentMarkerPulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(212,160,23,0.2), 0 0 14px rgba(212,160,23,0.9); }
+  50% { box-shadow: 0 0 0 8px rgba(212,160,23,0.08), 0 0 20px rgba(212,160,23,1); }
+}
+
 /* Progress panel */
 .dash-immersive .progress-panel .progress-header { color: rgba(253,246,227,0.8); font-size: 12px; }
 .dash-immersive .progress-bar { background: rgba(253,246,227,0.15); height: 8px; }
