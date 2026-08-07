@@ -248,7 +248,7 @@ export default function PaymentInfo() {
                 style={{ maxWidth: 220, margin: '0 auto', display: 'block' }}
               />
               <p className="payment-upi-id" style={{ marginTop: '0.75rem' }}>
-                UPI ID: <strong>devisinghbca96@oksbi</strong>
+                UPI ID: <strong>7359666687m@pnb</strong>
               </p>
               <div className="payment-warning" style={{ marginTop: '1rem' }}>
                 ⚠️ જો {BRAND.registrationFeeDisplay} ફી ભરવામાં નહીં આવે, તો activity points ગણવામાં આવશે નહીં.<br />

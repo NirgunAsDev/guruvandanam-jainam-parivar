@@ -266,7 +266,7 @@ export default function AuthPage({ mode }) {
             <div className="payment-qr-section">
               <p className="payment-qr-title">📲 Registration फ़ीस चुकाएं</p>
               <img src="/payment-qr.png" alt="UPI Payment QR" className="payment-qr-img" />
-              <p className="payment-upi-id">UPI ID: <strong>devisinghbca96@oksbi</strong></p>
+              <p className="payment-upi-id">UPI ID: <strong>7359666687m@pnb</strong></p>
             </div>
           </div>
         )}
