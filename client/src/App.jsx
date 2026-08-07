@@ -47,7 +47,9 @@ function Layout({ children }) {
     <div className="app-layout">
       <nav className="navbar">
         <div className="nav-brand">
-          <img src={BRAND.logoPath} alt={BRAND.logoAlt} className="nav-logo-img" />
+          <a href="https://jainamparivar.org/" target="_blank" rel="noopener noreferrer">
+            <img src={BRAND.logoPath} alt={BRAND.logoAlt} className="nav-logo-img" />
+          </a>
         </div>
 
         {/* Hamburger for mobile */}

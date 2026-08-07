@@ -35,9 +35,11 @@ export default function ResetPassword() {
       <div className="auth-container">
         <div className="auth-header">
           <div className="auth-logo">
-            <img src={BRAND.logoPath} alt={BRAND.logoAlt} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '0' }} />
+            <a href="https://jainamparivar.org/" target="_blank" rel="noopener noreferrer">
+              <img src={BRAND.logoPath} alt={BRAND.logoAlt} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '0' }} />
+            </a>
           </div>
-          <p>{BRAND.orgGu} આયોજિત</p>
+          <p>जैनम् परिवार आयोजित</p>
           <h1>{BRAND.nameGu}</h1>
         </div>
 

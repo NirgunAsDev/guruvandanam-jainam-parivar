@@ -112,14 +112,6 @@ export default function AuthPage({ mode }) {
     }
   }
 
-  function getAgeGroupLabel(dob) {
-    const a = calcAge(dob);
-    if (a === null) return '';
-    if (a >= 6 && a <= 15) return `👦 ${T.g1label}`;
-    if (a >= 15 && a <= 25) return `🧑 ${T.g2label}`;
-    if (a >= 26 && a <= 60) return `👨 ${T.g3label}`;
-    return '';
-  }
 
   // Max DOB: must be at least 6 years old
   const maxDob = (() => {
@@ -138,8 +130,12 @@ export default function AuthPage({ mode }) {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <div className="auth-logo"><img src={BRAND.logoPath} alt={BRAND.logoAlt} style={{width:'100%',height:'100%',objectFit:'contain',borderRadius:'0'}} /></div>
-          <p>{BRAND.orgGu} આયોજિત</p>
+          <div className="auth-logo">
+            <a href="https://jainamparivar.org/" target="_blank" rel="noopener noreferrer">
+              <img src={BRAND.logoPath} alt={BRAND.logoAlt} style={{width:'100%',height:'100%',objectFit:'contain',borderRadius:'0'}} />
+            </a>
+          </div>
+          <p>जैनम् परिवार आयोजित</p>
           <img src="/guruvandanam-logo.png" alt={BRAND.nameGu} className="auth-title-logo" />
         </div>
 
@@ -182,7 +178,6 @@ export default function AuthPage({ mode }) {
               <div className="form-group">
                 <label>Date of Birth</label>
                 <input type="date" name="dob" value={form.dob} onChange={handleChange} min={minDob} max={maxDob} required />
-                {form.dob && <div className="age-group-hint">{getAgeGroupLabel(form.dob)}{calcAge(form.dob) !== null ? ` (Age ${calcAge(form.dob)})` : ''}</div>}
               </div>
             )}
             {!isLogin && (
@@ -269,13 +264,9 @@ export default function AuthPage({ mode }) {
               <li>Registration ફી {BRAND.registrationFeeDisplay}/-</li>
             </ul>
             <div className="payment-qr-section">
-              <p className="payment-qr-title">📲 Registration ફી ચૂકવો</p>
+              <p className="payment-qr-title">📲 Registration फ़ीस चुकाएं</p>
               <img src="/payment-qr.png" alt="UPI Payment QR" className="payment-qr-img" />
               <p className="payment-upi-id">UPI ID: <strong>devisinghbca96@oksbi</strong></p>
-              <div className="payment-warning">
-                ⚠️ જો {BRAND.registrationFeeDisplay} ફી ભરવામાં નહીં આવે, તો activity points ગણવામાં આવશે નહીં.<br />
-                <span>If {BRAND.registrationFeeDisplay} registration fee is not paid, activity points will not be counted.</span>
-              </div>
             </div>
           </div>
         )}

@@ -24,7 +24,7 @@ export const t = {
     // Auth
     signIn: 'Sign In',
     register: 'Register',
-    joinChallenge: `${BRAND.nameGu} માટે નોંધણી કરો`,
+    joinChallenge: 'गुरुवंदनम् के लिए पंजीकरण करें',
     welcomeBack: 'Welcome back',
     fullName: 'Full Name',
     email: 'Email',

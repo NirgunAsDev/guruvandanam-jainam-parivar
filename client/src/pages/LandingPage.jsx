@@ -116,7 +116,7 @@ export default function LandingPage() {
           {/* CTA Button */}
           <div className="landing-cta">
             <button className="btn-primary landing-proceed-btn" onClick={() => navigate('/dashboard')}>
-              આગળ વધો — Dashboard
+              आगे बढ़ें — Dashboard
             </button>
           </div>
 
