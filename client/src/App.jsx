@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { api } from './api';
 import { LangContext, t, BRAND } from './lang';
+import guruvandanamLogo from './assets/guruvandanam-logo.png';
 import AuthPage from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
@@ -26,7 +27,7 @@ function SplashScreen() {
   }
   return (
     <div className="app-splash" onAnimationEnd={handleAnimationEnd}>
-      <img src="/guruvandanam-logo.png" alt={BRAND.nameGu} className="app-splash-logo" />
+      <img src={guruvandanamLogo} alt={BRAND.nameGu} className="app-splash-logo" />
     </div>
   );
 }

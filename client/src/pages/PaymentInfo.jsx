@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../App';
 import { api } from '../api';
 import { BRAND } from '../lang';
+import paymentQr from '../assets/payment-qr.png';
 
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
@@ -242,7 +243,7 @@ export default function PaymentInfo() {
                 — or pay via UPI —
               </p>
               <img
-                src="/payment-qr.png"
+                src={paymentQr}
                 alt="UPI Payment QR"
                 className="payment-qr-img"
                 style={{ maxWidth: 220, margin: '0 auto', display: 'block' }}

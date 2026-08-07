@@ -14,6 +14,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../App';
 import { t, BRAND } from '../lang';
+import guruvandanamLogo from '../assets/guruvandanam-logo.png';
+import paymentQr from '../assets/payment-qr.png';
 
 const T = t['en'];
 
@@ -136,7 +138,7 @@ export default function AuthPage({ mode }) {
             </a>
           </div>
           <p>जैनम् परिवार आयोजित</p>
-          <img src="/guruvandanam-logo.png" alt={BRAND.nameGu} className="auth-title-logo" />
+          <img src={guruvandanamLogo} alt={BRAND.nameGu} className="auth-title-logo" />
         </div>
 
         <div className="video-preview-banner" onClick={() => setShowVideo(true)}>
@@ -265,7 +267,7 @@ export default function AuthPage({ mode }) {
             </ul>
             <div className="payment-qr-section">
               <p className="payment-qr-title">📲 Registration फ़ीस चुकाएं</p>
-              <img src="/payment-qr.png" alt="UPI Payment QR" className="payment-qr-img" />
+              <img src={paymentQr} alt="UPI Payment QR" className="payment-qr-img" />
               <p className="payment-upi-id">UPI ID: <strong>7359666687m@pnb</strong></p>
             </div>
           </div>
