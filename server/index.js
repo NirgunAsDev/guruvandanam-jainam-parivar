@@ -6,6 +6,7 @@ const config = require('./config');
 const authRoutes = require('./routes/auth');
 const guruvandanRoutes = require('./routes/guruvandan');
 const multer = require('multer');
+const jwt = require('jsonwebtoken');
 const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
 // Configure S3 client (will auto-use env vars if standard)
@@ -102,6 +103,20 @@ app.put('/api/admin/users/:id/disqualify', authenticateToken, requireAdmin, (req
   res.json({ success: true });
 });
 
+// Admin: log in as a user (impersonation, for support/debugging)
+app.post('/api/admin/users/:id/impersonate', authenticateToken, requireAdmin, (req, res) => {
+  const { id } = req.params;
+  const target = db.prepare(
+    'SELECT id, name, email, age, group_num, is_admin, phone, address, city, state, zipcode, sangh_name, mahatma_name, mahatma_thana, total_guruvandans, registration_fee_paid, is_disqualified, is_deleted FROM users WHERE id = ?'
+  ).get(id);
+  if (!target || target.is_deleted) return res.status(404).json({ error: 'User not found' });
+  if (target.is_admin) return res.status(400).json({ error: 'Cannot impersonate an admin account' });
+
+  const token = jwt.sign({ userId: target.id, loginType: 'user' }, config.JWT_SECRET, { expiresIn: '2h' });
+  const { is_deleted, ...user } = target;
+  res.json({ token, user: { ...user, is_admin: 0 } });
+});
+
 // Admin: reset user password
 const bcrypt = require('bcryptjs');
 app.put('/api/admin/users/:id/password', authenticateToken, requireAdmin, async (req, res) => {
@@ -131,7 +146,7 @@ app.get('/api/admin/users/:id/logs', authenticateToken, requireAdmin, (req, res)
 app.get('/api/admin/users/:id/summary', authenticateToken, requireAdmin, (req, res) => {
   const { id } = req.params;
   const user = db.prepare(
-    'SELECT id, name, email, age, group_num, phone, address, city, state, zipcode, sangh_name, mahatma_name, mahatma_thana, total_guruvandans, registration_fee_paid, created_at, is_disqualified FROM users WHERE id = ?'
+    'SELECT id, name, email, age, group_num, is_admin, phone, address, city, state, zipcode, sangh_name, mahatma_name, mahatma_thana, total_guruvandans, registration_fee_paid, created_at, is_disqualified FROM users WHERE id = ?'
   ).get(id);
   if (!user) return res.status(404).json({ error: 'User not found' });
 

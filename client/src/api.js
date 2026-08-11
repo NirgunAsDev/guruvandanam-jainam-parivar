@@ -84,6 +84,9 @@ export const api = {
   disqualifyUser: (id, is_disqualified) =>
     fetch(`${BASE}/admin/users/${id}/disqualify`, { method: 'PUT', headers: authHeaders(), body: JSON.stringify({ is_disqualified }) }).then(handleResponse),
 
+  impersonateUser: (id) =>
+    fetch(`${BASE}/admin/users/${id}/impersonate`, { method: 'POST', headers: authHeaders() }).then(handleResponse),
+
   getUserSummary: (id) =>
     fetch(`${BASE}/admin/users/${id}/summary`, { headers: authHeaders() }).then(handleResponse),
 

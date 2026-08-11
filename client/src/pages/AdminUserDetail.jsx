@@ -17,7 +17,7 @@ function formatDate(dateStr) {
 }
 
 export default function AdminUserDetail() {
-  const { user } = useAuth();
+  const { user, loginAsUser } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const { lang } = useContext(LangContext);
@@ -27,6 +27,7 @@ export default function AdminUserDetail() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [disqSaving, setDisqSaving] = useState(false);
+  const [loginAsSaving, setLoginAsSaving] = useState(false);
 
   useEffect(() => {
     if (!user?.is_admin) return;
@@ -54,6 +55,17 @@ export default function AdminUserDetail() {
       setSummary(s => ({ ...s, user: { ...s.user, is_disqualified: newVal ? 1 : 0 } }));
     } finally {
       setDisqSaving(false);
+    }
+  }
+
+  async function handleLoginAsUser() {
+    setLoginAsSaving(true);
+    try {
+      const { token, user: impersonatedUser } = await api.impersonateUser(u.id);
+      loginAsUser(impersonatedUser, token);
+      navigate('/dashboard');
+    } finally {
+      setLoginAsSaving(false);
     }
   }
 
@@ -107,7 +119,7 @@ export default function AdminUserDetail() {
               Sangh: {u.sangh_name || '—'} · Mahatma: {u.mahatma_name || '—'} · Thana: {u.mahatma_thana || '—'}
             </div>
           )}
-          <div style={{ marginTop: 10 }}>
+          <div style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <button
               className={`btn-sm ${u.is_disqualified ? 'btn-primary' : 'btn-danger'}`}
               onClick={handleDisqualify}
@@ -115,6 +127,15 @@ export default function AdminUserDetail() {
             >
               {disqSaving ? '...' : u.is_disqualified ? '✓ Remove Disqualification' : '⚠ Disqualify User'}
             </button>
+            {!u.is_admin && (
+              <button
+                className="btn-sm btn-primary"
+                onClick={handleLoginAsUser}
+                disabled={loginAsSaving}
+              >
+                {loginAsSaving ? '...' : 'Login as User'}
+              </button>
+            )}
           </div>
         </div>
       </div>

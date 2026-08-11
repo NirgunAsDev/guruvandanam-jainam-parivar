@@ -32,7 +32,7 @@ function SplashScreen() {
 }
 
 function Layout({ children }) {
-  const { user, logout } = useAuth();
+  const { user, logout, impersonating, returnToAdmin } = useAuth();
   const { lang, activityLang, toggleActivityLang } = useContext(LangContext);
   const T = t[lang];
   const navigate = useNavigate();
@@ -41,6 +41,11 @@ function Layout({ children }) {
   function handleLogout() {
     logout();
     navigate('/login');
+  }
+
+  function handleReturnToAdmin() {
+    returnToAdmin();
+    navigate('/admin');
   }
 
   return (
@@ -117,6 +122,12 @@ function Layout({ children }) {
       {!!user?.is_disqualified && (
         <div className="disqualified-banner">
           ⚠️ તમને આ સ્પર્ધામાંથી ગેરલાયક ઠેરવવામાં આવ્યા છે. વધુ માહિતી માટે આયોજકોનો સંપર્ક કરો.
+        </div>
+      )}
+
+      {impersonating && (
+        <div className="impersonation-banner">
+          Viewing as {user?.name} <button className="impersonation-banner-btn" onClick={handleReturnToAdmin}>Return to Admin</button>
         </div>
       )}
 
@@ -211,9 +222,32 @@ export default function App() {
     });
   }
 
+  function loginAsUser(userData, token) {
+    if (!localStorage.getItem('adminToken')) {
+      localStorage.setItem('adminToken', localStorage.getItem('token'));
+      localStorage.setItem('adminUser', localStorage.getItem('user'));
+    }
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+  }
+
+  function returnToAdmin() {
+    const adminToken = localStorage.getItem('adminToken');
+    const adminUser = localStorage.getItem('adminUser');
+    if (!adminToken || !adminUser) return;
+    localStorage.setItem('token', adminToken);
+    localStorage.setItem('user', adminUser);
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    setUser(JSON.parse(adminUser));
+  }
+
+  const impersonating = !!localStorage.getItem('adminToken');
+
   return (
     <LangContext.Provider value={{ lang, toggleLang, activityLang, toggleActivityLang }}>
-      <AuthContext.Provider value={{ user, meLoaded, login, logout, updateUserPoints, updateUser }}>
+      <AuthContext.Provider value={{ user, meLoaded, login, logout, updateUserPoints, updateUser, loginAsUser, returnToAdmin, impersonating }}>
         <SplashScreen />
         <BrowserRouter>
           <Routes>

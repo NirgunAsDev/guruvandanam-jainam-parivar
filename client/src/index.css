@@ -1996,6 +1996,34 @@ body::after {
   50% { background: rgba(180,0,0,0.25); }
 }
 
+/* Impersonation banner */
+.impersonation-banner {
+  background: rgba(180, 130, 0, 0.14);
+  border-bottom: 2px solid rgba(180, 130, 0, 0.5);
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #8a5a00;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.impersonation-banner-btn {
+  background: #8a5a00;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.impersonation-banner-btn:hover {
+  background: #6e4700;
+}
+
 /* Program ended banner */
 .program-ended-banner {
   background: rgba(107,26,26,0.08);
