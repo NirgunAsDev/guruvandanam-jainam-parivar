@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, requirePaid } = require('../middleware/auth');
 const config = require('../config');
 
 // GET /api/guruvandan/logs?date=YYYY-MM-DD - get log(s) for the current user
-router.get('/logs', authenticateToken, (req, res) => {
+router.get('/logs', authenticateToken, requirePaid, (req, res) => {
   let logs;
   if (req.query.date) {
     logs = db.prepare('SELECT * FROM guruvandan_logs WHERE user_id = ? AND date = ?')
@@ -18,7 +18,7 @@ router.get('/logs', authenticateToken, (req, res) => {
 });
 
 // GET /api/guruvandan/summary - total guruvandans and recent daily counts
-router.get('/summary', authenticateToken, (req, res) => {
+router.get('/summary', authenticateToken, requirePaid, (req, res) => {
   const totalGuruvandans = req.user.total_guruvandans;
   const dailyLogs = db.prepare(
     `SELECT date, count FROM guruvandan_logs WHERE user_id = ? AND date >= '${config.COMPETITION_START_DATE}' ORDER BY date DESC LIMIT 30`
@@ -28,7 +28,7 @@ router.get('/summary', authenticateToken, (req, res) => {
 
 // POST /api/guruvandan/log - adjust the count for a date by a delta (positive or negative;
 // accumulates onto the existing day's count, clamped so it never drops below 0)
-router.post('/log', authenticateToken, (req, res) => {
+router.post('/log', authenticateToken, requirePaid, (req, res) => {
   const { count, date } = req.body;
   const logDate = date || new Date().toISOString().split('T')[0];
 
@@ -38,10 +38,6 @@ router.post('/log', authenticateToken, (req, res) => {
 
   if (req.user.is_disqualified) {
     return res.status(403).json({ error: `You have been disqualified from the ${config.BRAND_NAME}.` });
-  }
-
-  if (!req.isAdmin && !req.user.registration_fee_paid) {
-    return res.status(403).json({ error: `Registration fee of ${config.REGISTRATION_FEE_DISPLAY} must be paid before logging guruvandans.` });
   }
 
   const delta = parseInt(count);
@@ -76,7 +72,7 @@ router.post('/log', authenticateToken, (req, res) => {
 });
 
 // DELETE /api/guruvandan/log/:date - clear a day's count entirely
-router.delete('/log/:date', authenticateToken, (req, res) => {
+router.delete('/log/:date', authenticateToken, requirePaid, (req, res) => {
   const logEntry = db.prepare(
     'SELECT * FROM guruvandan_logs WHERE user_id = ? AND date = ?'
   ).get(req.user.id, req.params.date);

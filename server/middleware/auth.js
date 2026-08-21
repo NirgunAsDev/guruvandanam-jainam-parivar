@@ -35,4 +35,11 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-module.exports = { authenticateToken, requireAdmin };
+function requirePaid(req, res, next) {
+  if (!req.isAdmin && !req.user.registration_fee_paid) {
+    return res.status(403).json({ error: `Registration fee of ${config.REGISTRATION_FEE_DISPLAY} must be paid to access this.` });
+  }
+  next();
+}
+
+module.exports = { authenticateToken, requireAdmin, requirePaid };

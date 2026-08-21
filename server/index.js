@@ -35,10 +35,10 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/guruvandan', guruvandanRoutes);
 
-const { authenticateToken, requireAdmin } = require('./middleware/auth');
+const { authenticateToken, requireAdmin, requirePaid } = require('./middleware/auth');
 
 // Leaderboard
-app.get('/api/leaderboard', authenticateToken, (req, res) => {
+app.get('/api/leaderboard', authenticateToken, requirePaid, (req, res) => {
   const users = db.prepare(
     'SELECT id, name, age, group_num, total_guruvandans FROM users WHERE is_deleted = 0 AND is_disqualified = 0 ORDER BY total_guruvandans DESC LIMIT 50'
   ).all();
