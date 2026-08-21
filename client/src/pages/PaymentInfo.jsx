@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 import { api } from '../api';
 import { BRAND } from '../lang';
@@ -20,6 +21,7 @@ function loadRazorpayScript(timeoutMs = 5000) {
 
 export default function PaymentInfo() {
   const { user, login } = useAuth();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [scriptFailed, setScriptFailed] = useState(false);
@@ -167,6 +169,7 @@ export default function PaymentInfo() {
     setStatus('');
     setSuccess(true);
     setLoading(false);
+    setTimeout(() => navigate('/dashboard'), 2000);
   }
 
   const feePaid = user?.registration_fee_paid === 1 || success;
@@ -193,6 +196,11 @@ export default function PaymentInfo() {
           {feePaid && (
             <div className="alert alert-success" style={{ marginBottom: '1rem' }}>
               ✅ Registration fee paid. Your points are active!
+              {success && (
+                <div style={{ fontSize: '0.85rem', marginTop: '0.4rem' }}>
+                  Redirecting to your Dashboard…
+                </div>
+              )}
               {user?.razorpay_payment_id && (
                 <div style={{ fontSize: '0.8rem', marginTop: '0.4rem', opacity: 0.7 }}>
                   Payment ID: {user.razorpay_payment_id}
