@@ -29,7 +29,6 @@ function getRazorpay() {
 
 const AMOUNT = config.REGISTRATION_FEE_PAISE; // in paise
 const CURRENCY = 'INR';
-const ORDER_EXPIRY_SECONDS = 86400; // 24 hours
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -73,26 +72,16 @@ router.post('/create-order', authenticateToken, async (req, res) => {
       return res.status(429).json({ error: 'Too many requests. Please wait a minute.' });
     }
 
-    const user = db.prepare(
-      'SELECT registration_fee_paid, pending_order_id, pending_order_at FROM users WHERE id = ?'
-    ).get(userId);
+    const user = db.prepare('SELECT registration_fee_paid FROM users WHERE id = ?').get(userId);
 
     if (user.registration_fee_paid === 1) {
       return res.status(400).json({ error: 'Registration fee already paid.' });
     }
 
-    // Reuse existing order if < 24h old and fee still unpaid
+    // Always create a fresh order — reusing a cached order risks replaying
+    // one that Razorpay has since deemed invalid (e.g. after a key rotation),
+    // which would trap the user in a permanent "order is invalid" loop.
     const nowSec = Math.floor(Date.now() / 1000);
-    if (user.pending_order_id && (nowSec - user.pending_order_at) < ORDER_EXPIRY_SECONDS) {
-      return res.json({
-        orderId: user.pending_order_id,
-        amount: AMOUNT,
-        currency: CURRENCY,
-        keyId: process.env.RAZORPAY_KEY_ID,
-      });
-    }
-
-    // Create a new Razorpay order
     const order = await getRazorpay().orders.create({
       amount: AMOUNT,
       currency: CURRENCY,
