@@ -5,8 +5,6 @@ import { api } from '../api';
 import { BRAND } from '../lang';
 import paymentQr from '../assets/payment-qr.png';
 
-const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
-
 function loadRazorpayScript(timeoutMs = 5000) {
   return new Promise((resolve) => {
     if (window.Razorpay) return resolve(true);
@@ -68,7 +66,7 @@ export default function PaymentInfo() {
 
     // Step 3: Open checkout modal
     const options = {
-      key: RAZORPAY_KEY_ID,
+      key: orderData.keyId,
       amount: orderData.amount,
       currency: orderData.currency,
       order_id: orderData.orderId,

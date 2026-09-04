@@ -44,12 +44,6 @@ AWS_S3_BUCKET_NAME=
 CLOUDFRONT_DOMAIN=
 ```
 
-### client/.env
-
-```
-VITE_RAZORPAY_KEY_ID=
-```
-
 ## Development
 
 ```bash
