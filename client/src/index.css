@@ -495,8 +495,6 @@ body::after {
 .auth-info li::before { content: '→ '; color: var(--gold-light); }
 .payment-qr-section { margin-top: 16px; text-align: center; }
 .payment-qr-title { font-size: 14px; font-weight: 600; color: var(--gold-light); margin-bottom: 10px; }
-.payment-qr-img { width: 200px; height: 200px; object-fit: contain; border-radius: 8px; background: #fff; padding: 6px; display: block; margin: 0 auto 8px; }
-.payment-upi-id { font-size: 13px; opacity: .9; margin-bottom: 10px; }
 .payment-warning { background: rgba(200,50,50,0.2); border: 1px solid rgba(220,80,80,0.4); border-radius: 8px; padding: 10px 14px; font-size: 12px; line-height: 1.6; }
 .payment-warning span { opacity: .8; font-size: 11px; }
 

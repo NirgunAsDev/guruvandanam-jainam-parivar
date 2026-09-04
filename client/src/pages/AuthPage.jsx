@@ -15,7 +15,6 @@ import { api } from '../api';
 import { useAuth } from '../App';
 import { t, BRAND } from '../lang';
 import guruvandanamLogo from '../assets/guruvandanam-logo.png';
-import paymentQr from '../assets/payment-qr.png';
 
 const T = t['en'];
 
@@ -265,11 +264,6 @@ export default function AuthPage({ mode }) {
               <li>{BRAND.competitionStartDisplay} → {BRAND.competitionEndDisplay}</li>
               <li>Registration ફી {BRAND.registrationFeeDisplay}/-</li>
             </ul>
-            <div className="payment-qr-section">
-              <p className="payment-qr-title">📲 Registration फ़ीस चुकाएं</p>
-              <img src={paymentQr} alt="UPI Payment QR" className="payment-qr-img" />
-              <p className="payment-upi-id">UPI ID: <strong>7359666687m@pnb</strong></p>
-            </div>
           </div>
         )}
       </div>

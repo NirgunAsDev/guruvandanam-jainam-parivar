@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 import { api } from '../api';
 import { BRAND } from '../lang';
-import paymentQr from '../assets/payment-qr.png';
 
 function loadRazorpayScript(timeoutMs = 5000) {
   return new Promise((resolve) => {
@@ -81,8 +80,8 @@ export default function PaymentInfo() {
       method: {
         card:         1,
         upi:          1,
-        netbanking:   0,
-        wallet:       0,
+        netbanking:   1,
+        wallet:       1,
         emi:          0,
         paylater:     0,
         bank_transfer: 0,
@@ -225,13 +224,13 @@ export default function PaymentInfo() {
 
               {scriptFailed && (
                 <div className="alert alert-error" style={{ marginBottom: '1rem' }}>
-                  Could not load the payment gateway. Please check your connection and try again, or pay via UPI below.
+                  Could not load the payment gateway. Please check your connection and try again.
                 </div>
               )}
 
               {dismissedAfterFail && (
                 <div className="alert alert-error" style={{ marginBottom: '1rem' }}>
-                  Payment failed. Please try again or pay via UPI below.
+                  Payment failed. Please try again.
                 </div>
               )}
 
@@ -245,25 +244,10 @@ export default function PaymentInfo() {
                 {loading ? (status || 'Processing…') : `Pay ${BRAND.registrationFeeDisplay} with Razorpay`}
               </button>
 
-              <p style={{ color: '#666', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
-                — or pay via UPI —
-              </p>
-              <img
-                src={paymentQr}
-                alt="UPI Payment QR"
-                className="payment-qr-img"
-                style={{ maxWidth: 220, margin: '0 auto', display: 'block' }}
-              />
-              <p className="payment-upi-id" style={{ marginTop: '0.75rem' }}>
-                UPI ID: <strong>7359666687m@pnb</strong>
-              </p>
               <div className="payment-warning" style={{ marginTop: '1rem' }}>
                 ⚠️ જો {BRAND.registrationFeeDisplay} ફી ભરવામાં નહીં આવે, તો activity points ગણવામાં આવશે નહીં.<br />
                 <span>If {BRAND.registrationFeeDisplay} registration fee is not paid, activity points will not be counted.</span>
               </div>
-              <p style={{ fontSize: '0.8rem', color: '#999', marginTop: '0.75rem' }}>
-                
-              </p>
             </>
           )}
         </div>
