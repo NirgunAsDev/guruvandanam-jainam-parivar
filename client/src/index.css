@@ -1911,21 +1911,22 @@ body::after {
 /* Bumper locked banner */
 .bumper-locked-banner {
   background: rgba(232,103,10,0.1);
-  border: 1px solid rgba(232,103,10,0.35);
+  border: 2px solid rgba(232,103,10,0.35);
   border-radius: var(--radius);
-  padding: 10px 16px;
+  padding: 16px 20px;
   margin-bottom: 14px;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 1.15rem;
+  font-weight: 700;
   color: var(--saffron-deep);
   text-align: center;
+  line-height: 1.4;
 }
 @keyframes lock-flash {
   0%, 100% { background: rgba(232,103,10,0.1); border-color: rgba(232,103,10,0.35); }
-  50% { background: rgba(232,103,10,0.28); border-color: rgba(232,103,10,0.8); }
+  50% { background: rgba(232,103,10,0.4); border-color: rgba(232,103,10,1); }
 }
 .bumper-locked-banner--flash {
-  animation: lock-flash 1.4s ease-in-out infinite;
+  animation: lock-flash 1.2s ease-in-out infinite;
 }
 
 /* Shortlist banners */

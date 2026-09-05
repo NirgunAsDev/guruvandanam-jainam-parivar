@@ -273,7 +273,7 @@ export default function Dashboard() {
       <VideoModal isOpen={showVideo} onClose={() => setShowVideo(false)} videoUrl={helpVideoUrl} />
 
       {!isUnlocked && (
-        <div className="bumper-locked-banner">
+        <div className="bumper-locked-banner bumper-locked-banner--flash">
           {T.dashLocked}
         </div>
       )}
