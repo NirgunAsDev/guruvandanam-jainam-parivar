@@ -179,14 +179,14 @@ export default function PaymentInfo() {
         <h2>Competition Rules</h2>
         <ul style={{ lineHeight: '2', fontSize: '1.05rem' }}>
           <li>{BRAND.competitionStartDisplay} → {BRAND.competitionEndDisplay}</li>
-          <li>Registration ફી {BRAND.registrationFeeDisplay}/-</li>
+          <li>Registration Fees {BRAND.registrationFeeDisplay}/-</li>
         </ul>
       </div>
 
       <div className="section-card">
         <div className="payment-qr-section" style={{ textAlign: 'center' }}>
           <p className="payment-qr-title" style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>
-            Registration ફી {BRAND.registrationFeeDisplay}
+            Registration Fees {BRAND.registrationFeeDisplay}
           </p>
 
           {/* ── Already paid ── */}
@@ -245,7 +245,7 @@ export default function PaymentInfo() {
               </button>
 
               <div className="payment-warning" style={{ marginTop: '1rem' }}>
-                ⚠️ જો {BRAND.registrationFeeDisplay} ફી ભરવામાં નહીં આવે, તો activity points ગણવામાં આવશે નહીં.<br />
+                ⚠️ यदि {BRAND.registrationFeeDisplay} शुल्क का भुगतान नहीं किया गया, तो एक्टिविटी पॉइंट्स नहीं गिने जाएंगे।<br />
                 <span>If {BRAND.registrationFeeDisplay} registration fee is not paid, activity points will not be counted.</span>
               </div>
             </>

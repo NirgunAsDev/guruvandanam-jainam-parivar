@@ -40,7 +40,7 @@ export default function ResetPassword() {
             </a>
           </div>
           <p>जैनम् परिवार आयोजित</p>
-          <h1>{BRAND.nameGu}</h1>
+          <h1>{BRAND.nameHi}</h1>
         </div>
 
         <div className="auth-card">

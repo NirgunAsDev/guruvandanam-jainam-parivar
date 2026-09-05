@@ -14,11 +14,11 @@ export default function LangSlider({ variant = 'navbar' }) {
         En
       </button>
       <button
-        className={`lang-slider__opt ${lang === 'gu' ? 'lang-slider__opt--active' : ''}`}
-        onClick={() => lang !== 'gu' && toggleLang()}
-        aria-pressed={lang === 'gu'}
+        className={`lang-slider__opt ${lang === 'hi' ? 'lang-slider__opt--active' : ''}`}
+        onClick={() => lang !== 'hi' && toggleLang()}
+        aria-pressed={lang === 'hi'}
       >
-        ગુ
+        हि
       </button>
     </div>
   );

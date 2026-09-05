@@ -32,8 +32,8 @@ function baseTemplate({ title, preheader, bodyHtml }) {
           <td style="background:linear-gradient(135deg,#4A0E0E 0%,#6B1A1A 60%,#8B2500 100%);border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
             <img src="${appUrl}${config.LOGO_PATH}" alt="${config.ORG_NAME}" width="80" height="80"
               style="object-fit:contain;margin-bottom:16px;display:block;margin-left:auto;margin-right:auto;" />
-            <p style="margin:0 0 4px;color:#D4A017;font-size:13px;letter-spacing:2px;text-transform:uppercase;">${config.ORG_NAME_GU} આયોજિત</p>
-            <h1 style="margin:0;color:#F0C842;font-size:26px;letter-spacing:1px;">${config.BRAND_NAME_GU}</h1>
+            <p style="margin:0 0 4px;color:#D4A017;font-size:13px;letter-spacing:2px;text-transform:uppercase;">${config.ORG_NAME_HI} आयोजित</p>
+            <h1 style="margin:0;color:#F0C842;font-size:26px;letter-spacing:1px;">${config.BRAND_NAME_HI}</h1>
           </td>
         </tr>
 

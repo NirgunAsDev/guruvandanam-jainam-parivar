@@ -23,7 +23,7 @@ export default function VideoModal({ isOpen, onClose, videoUrl }) {
     <div className="video-modal-overlay" onClick={onClose}>
       <div className="video-modal" onClick={e => e.stopPropagation()}>
         <div className="video-modal-header">
-          <h2 className="video-modal-title">આરાધના પત્રક — Help Video</h2>
+          <h2 className="video-modal-title">आराधना पत्रक — Help Video</h2>
           <button className="video-modal-close" onClick={onClose} aria-label="Close">✕</button>
         </div>
         <div className="video-modal-body">

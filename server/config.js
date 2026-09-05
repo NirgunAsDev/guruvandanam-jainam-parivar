@@ -2,9 +2,9 @@ const brand = require('../shared/brand.json');
 
 module.exports = {
   BRAND_NAME: brand.name,
-  BRAND_NAME_GU: brand.nameGu,
+  BRAND_NAME_HI: brand.nameHi,
   ORG_NAME: brand.org,
-  ORG_NAME_GU: brand.orgGu,
+  ORG_NAME_HI: brand.orgHi,
   LOGO_PATH: brand.logoPath,
   YEAR: brand.year,
 

@@ -145,15 +145,15 @@ export default function AuthPage({ mode }) {
             </a>
           </div>
           <p>जैनम् परिवार आयोजित</p>
-          <img src={guruvandanamLogo} alt={BRAND.nameGu} className="auth-title-logo" />
+          <img src={guruvandanamLogo} alt={BRAND.nameHi} className="auth-title-logo" />
         </div>
 
         {helpVideoUrl && (
           <div className="video-preview-banner" onClick={() => setShowVideo(true)}>
             <div className="video-play-circle">▶</div>
             <div className="video-preview-text">
-              <div className="video-preview-label">Help Video — આરાધના પત્રક</div>
-              <div className="video-preview-sub">सहायता वीडियो / મદદ વિડિઓ</div>
+              <div className="video-preview-label">Help Video — आराधना पत्रक</div>
+              <div className="video-preview-sub">सहायता वीडियो</div>
             </div>
             <div className="video-preview-arrow">›</div>
           </div>
@@ -277,7 +277,7 @@ export default function AuthPage({ mode }) {
             <h3>{T.competitionRules}</h3>
             <ul>
               <li>{BRAND.competitionStartDisplay} → {BRAND.competitionEndDisplay}</li>
-              <li>Registration ફી {BRAND.registrationFeeDisplay}/-</li>
+              <li>Registration Fees {BRAND.registrationFeeDisplay}/-</li>
             </ul>
           </div>
         )}

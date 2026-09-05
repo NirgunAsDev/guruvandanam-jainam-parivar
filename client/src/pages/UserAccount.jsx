@@ -15,8 +15,8 @@ const INDIAN_STATES = [
 
 export default function UserAccount() {
   const { user, updateUser } = useAuth();
-  const { activityLang } = useContext(LangContext);
-  const T = { ...t['en'], ...t[activityLang] };
+  const { lang } = useContext(LangContext);
+  const T = { ...t['en'], ...t[lang] };
 
   const missingPhone = !user?.phone;
 

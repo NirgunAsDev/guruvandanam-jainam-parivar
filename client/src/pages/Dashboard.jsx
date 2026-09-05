@@ -137,7 +137,6 @@ export default function Dashboard() {
   const [helpVideoUrl, setHelpVideoUrl] = useState('');
   const [dailyLogs, setDailyLogs] = useState([]);
   const [toast, setToast] = useState(null);
-  const { activityLang } = useContext(LangContext);
 
   // Tracks the last value confirmed by the server for the currently selected
   // date, so typed/tapped edits can be sent as a delta and requests can be
@@ -275,7 +274,7 @@ export default function Dashboard() {
 
       {!isUnlocked && (
         <div className="bumper-locked-banner">
-          {(activityLang === 'hi' ? t.hi : T).dashLocked}
+          {T.dashLocked}
         </div>
       )}
 
@@ -398,7 +397,7 @@ export default function Dashboard() {
                 />
               </>
             ) : (
-              <div className="readonly-notice">🔒 જૂની તારીખ — ફક્ત જોવા માટે</div>
+              <div className="readonly-notice">{T.readonlyNotice}</div>
             )}
           </div>
         </div>
@@ -424,8 +423,8 @@ export default function Dashboard() {
             <div className="video-preview-banner" onClick={() => setShowVideo(true)}>
               <div className="video-play-circle">▶</div>
               <div className="video-preview-text">
-                <div className="video-preview-label">Help Video — ગુરુવંદનમ્</div>
-                <div className="video-preview-sub">सहायता वीडियो / મદદ વિડિઓ</div>
+                <div className="video-preview-label">Help Video — {BRAND.nameHi}</div>
+                <div className="video-preview-sub">सहायता वीडियो</div>
               </div>
               <div className="video-preview-arrow">›</div>
             </div>

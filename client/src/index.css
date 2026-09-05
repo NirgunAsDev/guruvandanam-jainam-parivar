@@ -29,7 +29,7 @@
 
 html, body {
   height: 100%;
-  font-family: 'Noto Sans Gujarati', 'Crimson Pro', 'Georgia', serif;
+  font-family: 'Noto Sans Devanagari', 'Crimson Pro', 'Georgia', serif;
   background: var(--cream);
   color: var(--text);
   font-size: 14px;
@@ -299,37 +299,6 @@ body::after {
 .lang-slider--auth .lang-slider__opt:not(.lang-slider__opt--active):hover {
   color: var(--cream);
   background: rgba(255,255,255,0.12);
-}
-
-/* Activity language toggle (Gujarati / Hindi) */
-.activity-lang-toggle {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 20px;
-  background: rgba(0,0,0,0.25);
-  border: 1px solid rgba(240,200,66,0.3);
-  padding: 2px;
-}
-.activity-lang-btn {
-  padding: 4px 14px;
-  border-radius: 16px;
-  border: none;
-  background: transparent;
-  color: rgba(253,246,227,0.65);
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .15s;
-  line-height: 1.4;
-}
-.activity-lang-btn--active {
-  background: var(--gold, #d4a017);
-  color: var(--maroon-deep, #6b1a1a);
-  box-shadow: 0 1px 5px rgba(212,160,23,0.4);
-}
-.activity-lang-btn:not(.activity-lang-btn--active):hover {
-  color: var(--cream, #fdf6e3);
-  background: rgba(255,255,255,0.1);
 }
 
 /* Auth page lang toggle wrapper — top-right corner */
@@ -850,7 +819,7 @@ body::after {
   padding: 12px 18px;
 }
 .dash-modern .stat-value {
-  font-family: 'Noto Sans Gujarati', -apple-system, sans-serif;
+  font-family: 'Noto Sans Devanagari', -apple-system, sans-serif;
   font-size: 22px;
   font-weight: 800;
   color: var(--maroon-deep);
@@ -895,7 +864,7 @@ body::after {
 .dash-modern .activity-card-header { justify-content: center; margin-bottom: 4px; }
 
 .dash-modern .counter-value-input {
-  font-family: 'Noto Sans Gujarati', -apple-system, sans-serif;
+  font-family: 'Noto Sans Devanagari', -apple-system, sans-serif;
   font-size: 56px;
   width: auto;
   min-width: 140px;
@@ -933,7 +902,7 @@ body::after {
   box-shadow: none;
 }
 .dash-modern .pace-value {
-  font-family: 'Noto Sans Gujarati', -apple-system, sans-serif;
+  font-family: 'Noto Sans Devanagari', -apple-system, sans-serif;
   font-size: 19px;
   color: var(--maroon-deep);
 }
@@ -1151,7 +1120,7 @@ body::after {
   margin-bottom: 10px;
 }
 .dash-immersive .counter-value-input {
-  font-family: 'Noto Sans Gujarati', -apple-system, sans-serif;
+  font-family: 'Noto Sans Devanagari', -apple-system, sans-serif;
   color: var(--cream);
   background: rgba(0,0,0,0.2);
   border: 1px solid rgba(253,246,227,0.2);
@@ -1246,7 +1215,7 @@ body::after {
   border: 1px solid rgba(253,246,227,0.12);
   box-shadow: none;
 }
-.dash-immersive .pace-value { color: var(--gold-light); font-family: 'Noto Sans Gujarati', -apple-system, sans-serif; }
+.dash-immersive .pace-value { color: var(--gold-light); font-family: 'Noto Sans Devanagari', -apple-system, sans-serif; }
 .dash-immersive .pace-label { color: rgba(253,246,227,0.6); }
 .dash-immersive .pace-achieved {
   background: rgba(212,160,23,0.12);

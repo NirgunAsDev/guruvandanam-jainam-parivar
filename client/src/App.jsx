@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { api } from './api';
 import { LangContext, t, BRAND } from './lang';
+import LangSlider from './components/LangSlider';
 import guruvandanamLogo from './assets/guruvandanam-logo.png';
 import AuthPage from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
@@ -27,14 +28,14 @@ function SplashScreen() {
   }
   return (
     <div className="app-splash" onAnimationEnd={handleAnimationEnd}>
-      <img src={guruvandanamLogo} alt={BRAND.nameGu} className="app-splash-logo" />
+      <img src={guruvandanamLogo} alt={BRAND.nameHi} className="app-splash-logo" />
     </div>
   );
 }
 
 function Layout({ children }) {
   const { user, logout, impersonating, returnToAdmin } = useAuth();
-  const { lang, activityLang, toggleActivityLang } = useContext(LangContext);
+  const { lang } = useContext(LangContext);
   const T = t[lang];
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -99,20 +100,7 @@ function Layout({ children }) {
         </div>
 
         <div className="nav-user">
-          <div className="activity-lang-toggle activity-lang-toggle--navbar">
-            <button
-              className={`activity-lang-btn ${activityLang === 'gu' ? 'activity-lang-btn--active' : ''}`}
-              onClick={() => activityLang !== 'gu' && toggleActivityLang()}
-            >
-              ગુ
-            </button>
-            <button
-              className={`activity-lang-btn ${activityLang === 'hi' ? 'activity-lang-btn--active' : ''}`}
-              onClick={() => activityLang !== 'hi' && toggleActivityLang()}
-            >
-              हि
-            </button>
-          </div>
+          <LangSlider variant="navbar" />
           <span className="nav-username">{user?.name}</span>
           <span className="nav-points">{(user?.total_guruvandans || 0).toLocaleString()} guruvandans</span>
           <button onClick={handleLogout} className="btn-logout">{T.logout}</button>
@@ -124,7 +112,7 @@ function Layout({ children }) {
 
       {!!user?.is_disqualified && (
         <div className="disqualified-banner">
-          ⚠️ તમને આ સ્પર્ધામાંથી ગેરલાયક ઠેરવવામાં આવ્યા છે. વધુ માહિતી માટે આયોજકોનો સંપર્ક કરો.
+          {T.disqualifiedBanner}
         </div>
       )}
 
@@ -160,21 +148,15 @@ export default function App() {
   });
   const [meLoaded, setMeLoaded] = useState(false);
 
-  const [lang, setLang] = useState(() => localStorage.getItem('lang') || 'en');
-  const [activityLang, setActivityLang] = useState(() => localStorage.getItem('activityLang') || 'gu');
+  const [lang, setLang] = useState(() => {
+    const stored = localStorage.getItem('lang');
+    return stored === 'hi' ? 'hi' : 'en'; // guards against a stale 'gu' value from before Gujarati was removed
+  });
 
   function toggleLang() {
     setLang(l => {
-      const next = l === 'en' ? 'gu' : 'en';
+      const next = l === 'en' ? 'hi' : 'en';
       localStorage.setItem('lang', next);
-      return next;
-    });
-  }
-
-  function toggleActivityLang() {
-    setActivityLang(l => {
-      const next = l === 'gu' ? 'hi' : 'gu';
-      localStorage.setItem('activityLang', next);
       return next;
     });
   }
@@ -249,7 +231,7 @@ export default function App() {
   const impersonating = !!localStorage.getItem('adminToken');
 
   return (
-    <LangContext.Provider value={{ lang, toggleLang, activityLang, toggleActivityLang }}>
+    <LangContext.Provider value={{ lang, toggleLang }}>
       <AuthContext.Provider value={{ user, meLoaded, login, logout, updateUserPoints, updateUser, loginAsUser, returnToAdmin, impersonating }}>
         <SplashScreen />
         <BrowserRouter>
