@@ -20,6 +20,16 @@ const T = t['en'];
 const MIN_AGE = 6;
 const MAX_AGE = 60;
 
+function calcAge(dob) {
+  if (!dob) return null;
+  const today = new Date();
+  const birth = new Date(dob);
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+}
+
 function ForgotPasswordForm({ onBack }) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -67,7 +77,7 @@ export default function AuthPage({ mode }) {
   const navigate = useNavigate();
   const isLogin = mode === 'login';
 
-  const [form, setForm] = useState({ name: '', email: '', password: '', age: 18, phone: '', address: '', city: '', state: '', zipcode: '', sangh_name: '', mahatma_name: '', mahatma_thana: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', dob: '', phone: '', address: '', city: '', state: '', zipcode: '', sangh_name: '', mahatma_name: '', mahatma_thana: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
@@ -87,36 +97,20 @@ export default function AuthPage({ mode }) {
     setForm(f => ({ ...f, phone: val }));
   }
 
-  function handleAgeChange(e) {
-    const v = e.target.value;
-    setForm(f => ({ ...f, age: v === '' ? '' : Math.min(MAX_AGE, Math.max(MIN_AGE, parseInt(v) || MIN_AGE)) }));
-  }
-
-  function handleAgeBlur() {
-    setForm(f => ({ ...f, age: f.age === '' ? MIN_AGE : f.age }));
-  }
-
-  function handleAgeIncrement() {
-    setForm(f => ({ ...f, age: Math.min(MAX_AGE, (f.age || MIN_AGE) + 1) }));
-  }
-
-  function handleAgeDecrement() {
-    setForm(f => ({ ...f, age: Math.max(MIN_AGE, (f.age || MIN_AGE) - 1) }));
-  }
-
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
-      if (!isLogin && (form.age < MIN_AGE || form.age > MAX_AGE)) {
+      const age = calcAge(form.dob);
+      if (!isLogin && (age === null || age < MIN_AGE || age > MAX_AGE)) {
         setError(`Age must be between ${MIN_AGE} and ${MAX_AGE}.`);
         setLoading(false);
         return;
       }
       const data = isLogin
         ? await api.login({ email: form.email, password: form.password })
-        : await api.register({ name: form.name, email: form.email, password: form.password, age: form.age, phone: form.phone, address: form.address, city: form.city, state: form.state, zipcode: form.zipcode, sangh_name: form.sangh_name, mahatma_name: form.mahatma_name, mahatma_thana: form.mahatma_thana });
+        : await api.register({ name: form.name, email: form.email, password: form.password, age, phone: form.phone, address: form.address, city: form.city, state: form.state, zipcode: form.zipcode, sangh_name: form.sangh_name, mahatma_name: form.mahatma_name, mahatma_thana: form.mahatma_thana });
       login(data.user, data.token);
       navigate(!data.user.phone ? '/account' : '/landing');
     } catch (err) {
@@ -125,6 +119,21 @@ export default function AuthPage({ mode }) {
       setLoading(false);
     }
   }
+
+  // Max DOB: must be at least MIN_AGE years old
+  const maxDob = (() => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() - MIN_AGE);
+    return d.toISOString().split('T')[0];
+  })();
+  // Min DOB: must be at most MAX_AGE years old
+  const minDob = (() => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() - MAX_AGE);
+    return d.toISOString().split('T')[0];
+  })();
+  const computedAge = calcAge(form.dob);
+  const ageOutOfRange = computedAge !== null && (computedAge < MIN_AGE || computedAge > MAX_AGE);
 
   return (
     <div className="auth-page">
@@ -178,39 +187,13 @@ export default function AuthPage({ mode }) {
             </div>
             {!isLogin && (
               <div className="form-group">
-                <label>Age ({MIN_AGE}–{MAX_AGE} years)</label>
-                <div className="counter-stepper">
-                  <input
-                    type="number"
-                    className="counter-value-input"
-                    min={MIN_AGE}
-                    max={MAX_AGE}
-                    value={form.age}
-                    onChange={handleAgeChange}
-                    onBlur={handleAgeBlur}
-                    required
-                  />
-                  <div className="counter-btn-row">
-                    <button
-                      type="button"
-                      className="counter-btn counter-btn--minus"
-                      onClick={handleAgeDecrement}
-                      disabled={form.age <= MIN_AGE}
-                      aria-label="Decrease age"
-                    >
-                      −
-                    </button>
-                    <button
-                      type="button"
-                      className="counter-btn counter-btn--plus"
-                      onClick={handleAgeIncrement}
-                      disabled={form.age >= MAX_AGE}
-                      aria-label="Increase age"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
+                <label>Date of Birth</label>
+                <input type="date" name="dob" value={form.dob} onChange={handleChange} min={minDob} max={maxDob} required />
+                {form.dob && (
+                  <span className="field-hint" style={ageOutOfRange ? { color: 'var(--danger, #ef4444)' } : undefined}>
+                    Age: {computedAge} years{ageOutOfRange ? ` (must be ${MIN_AGE}–${MAX_AGE})` : ''}
+                  </span>
+                )}
               </div>
             )}
             {!isLogin && (
