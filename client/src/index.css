@@ -328,6 +328,34 @@ body::after {
 .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(107,26,26,0.4); }
 .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
 
+.btn-pay-cta {
+  position: relative;
+  overflow: hidden;
+  animation: pay-btn-glow 1.6s ease-in-out infinite;
+}
+.btn-pay-cta::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
+  transform: skewX(-20deg);
+  animation: pay-btn-shine 2.6s ease-in-out infinite;
+}
+.btn-pay-cta:disabled { animation: none; box-shadow: none; }
+.btn-pay-cta:disabled::after { display: none; }
+@keyframes pay-btn-glow {
+  0%, 100% { box-shadow: 0 3px 12px rgba(107,26,26,0.3), 0 0 0 rgba(240,200,66,0); }
+  50% { box-shadow: 0 3px 18px rgba(107,26,26,0.4), 0 0 16px rgba(240,200,66,0.7); }
+}
+@keyframes pay-btn-shine {
+  0% { left: -75%; }
+  50% { left: 125%; }
+  100% { left: 125%; }
+}
+
 .btn-secondary {
   background: var(--white);
   color: var(--maroon);

@@ -236,12 +236,12 @@ export default function PaymentInfo() {
 
               <button
                 type="button"
-                className="btn-primary"
+                className="btn-primary btn-pay-cta"
                 onClick={handlePayClick}
                 disabled={loading}
                 style={{ marginBottom: '1rem' }}
               >
-                {loading ? (status || 'Processing…') : `Pay ${BRAND.registrationFeeDisplay} with Razorpay`}
+                {loading ? (status || 'Processing…') : `Pay ${BRAND.registrationFeeDisplay}`}
               </button>
 
               <div className="payment-warning" style={{ marginTop: '1rem' }}>
