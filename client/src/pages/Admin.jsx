@@ -216,7 +216,7 @@ function LandingVideoSection() {
       const res = await api.uploadLandingVideo(formData);
       setCurrentUrl(res.landing_video_url);
       setFile(null);
-      setStatus({ ok: true, text: 'Video uploaded successfully! It is now live on the landing page.' });
+      setStatus({ ok: true, text: 'Video uploaded successfully! It is now live as the Help Video.' });
       
       // Reset input
       const fileInput = document.getElementById('landing-video-upload');
@@ -229,13 +229,13 @@ function LandingVideoSection() {
   }
 
   async function handleRemove() {
-    if (!window.confirm('Are you sure you want to remove the landing page video?')) return;
+    if (!window.confirm('Are you sure you want to remove the Help Video?')) return;
     setUploading(true);
     setStatus(null);
     try {
       await api.removeLandingVideo();
       setCurrentUrl('');
-      setStatus({ ok: true, text: 'Video removed. Landing page will load normally without a video.' });
+      setStatus({ ok: true, text: 'Video removed. The Help Video button will be hidden until a new video is uploaded.' });
     } catch (err) {
       setStatus({ ok: false, text: err.message });
     } finally {
@@ -245,9 +245,9 @@ function LandingVideoSection() {
 
   return (
     <div style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '16px 20px', marginBottom: 24 }}>
-      <div style={{ fontWeight: 600, marginBottom: 4, fontSize: 15 }}>🎬 Landing Page — Welcome Video</div>
+      <div style={{ fontWeight: 600, marginBottom: 4, fontSize: 15 }}>🎬 Help Video</div>
       <div style={{ fontSize: 13, color: 'var(--text-mid)', marginBottom: 12 }}>
-        Upload an MP4 video here. Logged-in users will see this video auto-play in a modal when they visit the landing page.
+        Upload an MP4 video here. A "Help Video" button will appear on the login/register and dashboard pages for users to watch. If no video is uploaded, the button is hidden.
       </div>
       
       {loading ? (

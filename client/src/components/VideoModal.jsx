@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-export default function VideoModal({ isOpen, onClose }) {
+export default function VideoModal({ isOpen, onClose, videoUrl }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function VideoModal({ isOpen, onClose }) {
     return () => document.removeEventListener('keydown', handler);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !videoUrl) return null;
 
   return (
     <div className="video-modal-overlay" onClick={onClose}>
@@ -30,7 +30,7 @@ export default function VideoModal({ isOpen, onClose }) {
           <video
             ref={videoRef}
             className="video-modal-player"
-            src="/Aradhna-patrak-video.mp4"
+            src={videoUrl}
             controls
             playsInline
           />

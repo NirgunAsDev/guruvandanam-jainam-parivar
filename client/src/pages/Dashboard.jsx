@@ -134,6 +134,7 @@ export default function Dashboard() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [showVideo, setShowVideo] = useState(false);
+  const [helpVideoUrl, setHelpVideoUrl] = useState('');
   const [dailyLogs, setDailyLogs] = useState([]);
   const [toast, setToast] = useState(null);
   const { activityLang } = useContext(LangContext);
@@ -154,6 +155,10 @@ export default function Dashboard() {
   function refreshSummary() {
     api.getSummary().then(res => setDailyLogs(res.dailyLogs || [])).catch(() => {});
   }
+
+  useEffect(() => {
+    api.getLandingVideo().then(res => setHelpVideoUrl(res.landing_video_url || '')).catch(() => {});
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -266,7 +271,7 @@ export default function Dashboard() {
         <p>{T.hello}, <strong>{user?.name}</strong></p>
       </div>
 
-      <VideoModal isOpen={showVideo} onClose={() => setShowVideo(false)} />
+      <VideoModal isOpen={showVideo} onClose={() => setShowVideo(false)} videoUrl={helpVideoUrl} />
 
       {!isUnlocked && (
         <div className="bumper-locked-banner">
@@ -415,14 +420,16 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="video-preview-banner" onClick={() => setShowVideo(true)}>
-            <div className="video-play-circle">▶</div>
-            <div className="video-preview-text">
-              <div className="video-preview-label">Help Video — ગુરુવંદનમ્</div>
-              <div className="video-preview-sub">सहायता वीडियो / મદદ વિડિઓ</div>
+          {helpVideoUrl && (
+            <div className="video-preview-banner" onClick={() => setShowVideo(true)}>
+              <div className="video-play-circle">▶</div>
+              <div className="video-preview-text">
+                <div className="video-preview-label">Help Video — ગુરુવંદનમ્</div>
+                <div className="video-preview-sub">सहायता वीडियो / મદદ વિડિઓ</div>
+              </div>
+              <div className="video-preview-arrow">›</div>
             </div>
-            <div className="video-preview-arrow">›</div>
-          </div>
+          )}
 
           <div className="dash-panel analytics-panel">
             <h3 className="dash-panel-title">Detailed Analytics</h3>

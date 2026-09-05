@@ -5,12 +5,12 @@
   "orgGu": "જૈનમ્ પરિવાર",
   "logoPath": "/jainam-parivar-8ebfb0b2.png",
   "year": 2026,
-  "competitionStart": "2026-08-04",
-  "competitionStartDisplay": "4th August 2026",
-  "competitionEnd": "2026-12-31",
-  "competitionEndDisplay": "31st December 2026",
+  "competitionStart": "2026-09-17",
+  "competitionStartDisplay": "17th September 2026",
+  "competitionEnd": "2027-01-15",
+  "competitionEndDisplay": "15th January 2027",
   "bumperUnlockDate": "2026-07-01",
-  "registrationFeePaise": 100,
-  "registrationFeeDisplay": "₹1",
+  "registrationFeePaise": 20000,
+  "registrationFeeDisplay": "₹200",
   "adminEmailPlaceholder": "admin@aaradhna.com"
 }

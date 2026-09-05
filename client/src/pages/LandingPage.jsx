@@ -52,10 +52,10 @@ export default function LandingPage() {
                 आयु सीमा: इस गुरुवंदनम् आराधना में ६ वर्ष से ६० वर्ष तक के भाग्यशाली लाभार्थी भाग ले सकते हैं।
               </li>
               <li>
-                लक्ष्य: गुरुवंदनम् आराधना के अंतर्गत पूज्य साधु भगवंत को चातुर्मास के १२० दिनों में कुल १००८ गुरु-वंदन करने होंगे।
+                लक्ष्य: गुरुवंदनम् आराधना के अंतर्गत पूज्य साधु एवम् साध्वी जी भगवंत को इस आराधना के १२१ दिनों में कुल १००८ गुरु-वंदन करने होंगे।
               </li>
               <li>
-                प्रत्यक्ष वंदन: गुरु-वंदन केवल प्रत्यक्ष साधु भगवंत के समक्ष किया गया ही मान्य होगा। किसी फोटो या मूर्ति के समक्ष किया गया वंदन मान्य नहीं होगा।
+                प्रत्यक्ष वंदन: गुरु-वंदन केवल प्रत्यक्ष पूज्य साधु एवम् साध्वी जी भगवंत के समक्ष किया गया ही मान्य होगा। किसी फोटो या मूर्ति के समक्ष किया गया वंदन मान्य नहीं होगा।
               </li>
               <li>
                 दैनिक सीमा: १ दिन में १ साधु महात्मा को अधिकतम ३ बार ही गुरु-वंदन किया जा सकता है। उससे अधिक किया गया वंदन मान्य नहीं होगा।
@@ -64,10 +64,10 @@ export default function LandingPage() {
                 पंजीकरण एवं प्रविष्टि: 'गुरुवंदनम्' में भाग लेने के लिए Online Registration (ऑनलाइन पंजीकरण) करवाना अनिवार्य है। प्रतिदिन किए गए गुरु-वंदन को ऑनलाइन सबमिट (Submit) करना होगा।
               </li>
               <li>
-                बहुमान (सम्मान): चातुर्मास के १२० दिनों के दौरान जो भी पुण्यात्मा १००८ गुरु-वंदन पूर्ण करेंगे, उन सभी का विशेष बहुमान/सम्मान किया जाएगा।
+                बहुमान (सम्मान): इस आराधना के १२१ दिनों के दौरान जो भी पुण्यात्मा १००८ गुरु-वंदन पूर्ण करेंगे, उन सभी का विशेष बहुमान/सम्मान किया जाएगा।
               </li>
               <li>
-                पंजीकरण शुल्क: गुरुवंदनम् आराधना में जुड़ने के लिए ₹ १००/- Registration Fee (पंजीकरण शुल्क) अनिवार्य है।
+                पंजीकरण शुल्क: गुरुवंदनम् आराधना में जुड़ने के लिए ₹ २००/- Registration Fee (पंजीकरण शुल्क) अनिवार्य है।
               </li>
             </ol>
           </div>
@@ -81,10 +81,10 @@ export default function LandingPage() {
                 Age Limit: Fortunate participants aged 6 to 60 years may take part in this {BRAND.name} aradhana.
               </li>
               <li>
-                Goal: Under the {BRAND.name} aradhana, a total of 1008 Guru-Vandan must be offered to the revered Sadhu Bhagwants during the 120 days of Chaturmas.
+                Goal: Under the {BRAND.name} aradhana, a total of 1008 Guru-Vandan must be offered to the revered Sadhu or Sadhvi Bhagwants during the 121 days of this aradhana.
               </li>
               <li>
-                In-Person Vandan: Only Guru-Vandan performed directly in the presence of a Sadhu Bhagwant will be considered valid. Vandan performed before a photo or idol will not be valid.
+                In-Person Vandan: Only Guru-Vandan performed directly in the presence of a Sadhu or Sadhvi Bhagwant will be considered valid. Vandan performed before a photo or idol will not be valid.
               </li>
               <li>
                 Daily Limit: A maximum of 3 Guru-Vandan can be performed to one Sadhu Mahatma per day. Any Vandan performed beyond this will not be valid.
@@ -93,10 +93,10 @@ export default function LandingPage() {
                 Registration & Entry: Online Registration is mandatory to participate in '{BRAND.name}'. The Guru-Vandan performed each day must be submitted online.
               </li>
               <li>
-                Honor (Recognition): All the blessed souls who complete 1008 Guru-Vandan during the 120 days of Chaturmas will receive special honor/recognition.
+                Honor (Recognition): All the blessed souls who complete 1008 Guru-Vandan during the 121 days of this aradhana will receive special honor/recognition.
               </li>
               <li>
-                Registration Fee: A Registration Fee of ₹100/- is mandatory to join the {BRAND.name} aradhana.
+                Registration Fee: A Registration Fee of ₹200/- is mandatory to join the {BRAND.name} aradhana.
               </li>
             </ol>
           </div>
